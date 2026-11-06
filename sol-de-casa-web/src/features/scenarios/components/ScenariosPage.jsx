@@ -7,6 +7,7 @@ import { ScenariosTable } from './ScenariosTable.jsx';
 import { FunnelDropCard } from './FunnelDropCard.jsx';
 import { PaybackCard } from './PaybackCard.jsx';
 import { AgencyCheck } from './AgencyCheck.jsx';
+import { ScenarioFunnelChart } from './ScenarioFunnelChart.jsx';
 import styles from './Scenarios.module.css';
 
 export const ScenariosPage = () => {
@@ -26,6 +27,9 @@ export const ScenariosPage = () => {
         <AgencyCheck scenarios={scenarios} />
       </div>
       <ScenariosTable scenarios={scenarios} />
+      <div style={{ marginTop: 16 }}>
+        <ScenarioFunnelChart result={today.result} />
+      </div>
       <div className={styles.grid}>
         <FunnelDropCard params={params} />
         <PaybackCard params={params} result={today.result} />

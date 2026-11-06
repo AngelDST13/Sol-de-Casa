@@ -267,7 +267,7 @@
 
 /* ---------- Calculadora ---------- */
 .savings {
-  padding: var(--space-9) 0 var(--space-8);
+  padding: var(--space-7) 0;
 }
 .savingsGrid {
   display: grid;
@@ -390,7 +390,7 @@
 
 /* ---------- Cómo funciona ---------- */
 .how {
-  padding: var(--space-8) 0 var(--space-9);
+  padding: var(--space-7) 0;
   background: var(--surface);
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -518,7 +518,7 @@
 
 /* ---------- Incluye ---------- */
 .includes {
-  padding: var(--space-9) 0;
+  padding: var(--space-7) 0;
 }
 .includesGrid {
   display: grid;
@@ -614,7 +614,7 @@
 
 /* ---------- Testimonios ---------- */
 .testimonials {
-  padding: var(--space-8) 0 var(--space-9);
+  padding: var(--space-7) 0;
   background: var(--surface);
   border-top: 1px solid var(--line);
 }
@@ -698,7 +698,7 @@
 
 /* ---------- Referidos ---------- */
 .referral {
-  padding: var(--space-9) 0;
+  padding: var(--space-7) 0;
   color: var(--on-night);
 }
 .referralGrid {
@@ -751,7 +751,7 @@
 
 /* ---------- Preguntas ---------- */
 .faq {
-  padding: var(--space-9) 0;
+  padding: var(--space-7) 0;
 }
 .faqGrid {
   display: grid;
@@ -842,4 +842,21 @@
 .finalInner p {
   font-size: 1.1rem;
   font-weight: 600;
+}
+
+@media (min-width: 900px) {
+  .savings,
+  .includes,
+  .referral,
+  .faq {
+    padding: var(--space-9) 0;
+  }
+  .how,
+  .testimonials {
+    padding: var(--space-8) 0 var(--space-9);
+  }
+}
+.priceFacts dd,
+.calcResults strong {
+  white-space: nowrap;
 }

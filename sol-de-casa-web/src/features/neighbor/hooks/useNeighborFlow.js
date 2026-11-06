@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { addLead } from '../../../services/leadsService.js';
+import { trackNeighborEvent } from '../../../services/funnelService.js';
 import { findFamilyByCode } from '../../../services/authService.js';
 import { SAVINGS, buildSavingsHistory, savingsCalculator, summarizeSavings } from '../../../shared/model/index.js';
 
@@ -13,7 +14,9 @@ export const useNeighborFlow = () => {
   const initialBill = Number(search.get('recibo')) || SAVINGS.averageBill;
 
   const [step, setStep] = useState('calculate');
-  const [bill, setBill] = useState(initialBill);
+  const [bill, setBillState] = useState(initialBill);
+  const opened = useRef(false);
+  const calculated = useRef(false);
   const [form, setForm] = useState({ name: '', phone: '' });
   const [errors, setErrors] = useState({});
   const [saved, setSaved] = useState(null);
@@ -25,6 +28,21 @@ export const useNeighborFlow = () => {
   }, [code]);
 
   const result = useMemo(() => savingsCalculator(bill), [bill]);
+
+  // Medición para el panel de Andrés: abrió el link y usó la calculadora (una vez por visita).
+  useEffect(() => {
+    if (opened.current) return;
+    opened.current = true;
+    trackNeighborEvent(referrer ? code : null, 'abrio');
+  }, [code, referrer]);
+
+  const setBill = (value) => {
+    if (!calculated.current) {
+      calculated.current = true;
+      trackNeighborEvent(referrer ? code : null, 'calculo');
+    }
+    setBillState(value);
+  };
 
   const updateField = (key, value) => setForm((current) => ({ ...current, [key]: value }));
 
@@ -44,6 +62,7 @@ export const useNeighborFlow = () => {
         neighborhood: referrer?.neighborhood ?? '',
       }),
     );
+    if (!calculated.current) trackNeighborEvent(referrer ? code : null, 'calculo');
     setStep('done');
     window.scrollTo({ top: 0 });
   };

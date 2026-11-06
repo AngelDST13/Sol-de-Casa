@@ -41,8 +41,12 @@ npm install
 npm run dev        # muestra una dirección «Network» para abrirla en el celular con el mismo wifi
 npm run test       # 28 pruebas: modelo de la sesión 1 y 2, cuentas y solicitudes
 npm run build      # genera dist/ para cualquier hosting estático
+npm run build:archivo  # genera dist-archivo/index.html: un solo archivo que abre con doble clic
+npm run deploy     # publica en GitHub Pages (el sitio queda público)
 npm run lint
 ```
+
+La lista de cada requisito de los documentos y dónde está en el sistema: [CUMPLIMIENTO.md](CUMPLIMIENTO.md).
 
 ## Estructura
 

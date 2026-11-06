@@ -8,6 +8,8 @@
     "build": "npm --prefix sol-de-casa-web run build",
     "preview": "npm --prefix sol-de-casa-web run preview",
     "test": "npm --prefix sol-de-casa-web run test",
-    "lint": "npm --prefix sol-de-casa-web run lint"
+    "lint": "npm --prefix sol-de-casa-web run lint",
+    "deploy": "npm --prefix sol-de-casa-web run deploy",
+    "build:archivo": "npm --prefix sol-de-casa-web run build:archivo"
   }
 }

@@ -7,10 +7,10 @@ import { DEMO_PASSWORD } from '../../../services/authService.js';
 import styles from './Auth.module.css';
 
 const DEMO_ACCOUNTS = [
-  { email: 'familia@soldecasa.cr', label: 'Familia con paneles', detail: 'Ve su ahorro y comparte' },
-  { email: 'andres@soldecasa.cr', label: 'Andrés (administrador)', detail: 'Todo el panel, usuarios y ajustes' },
-  { email: 'paola@soldecasa.cr', label: 'Paola (asesora)', detail: 'Solicitudes, agenda y reportes' },
-  { email: 'mario@soldecasa.cr', label: 'Mario (técnico)', detail: 'Su agenda de visitas' },
+  { email: 'familia@soldecasa.cr', label: 'Familia', detail: 'Cliente con paneles' },
+  { email: 'andres@soldecasa.cr', label: 'Andrés', detail: 'Administrador' },
+  { email: 'paola@soldecasa.cr', label: 'Paola', detail: 'Asesora' },
+  { email: 'mario@soldecasa.cr', label: 'Mario', detail: 'Técnico' },
 ];
 
 export const LoginPage = () => {
@@ -49,7 +49,7 @@ export const LoginPage = () => {
     <>
       <p className={styles.eyebrow}>Iniciar sesión</p>
       <h1 className={styles.title}>Qué bueno verle de vuelta.</h1>
-      <p className={styles.lead}>Vea cuánto ahorró este mes o entre al panel del equipo.</p>
+      <p className={styles.lead}>Vea su ahorro del mes o entre al panel del equipo.</p>
 
       <form className={styles.form} onSubmit={submit} noValidate>
         <Field
@@ -84,6 +84,7 @@ export const LoginPage = () => {
               type="button"
               disabled={busy}
               onClick={() => enter({ email: account.email, password: DEMO_PASSWORD })}
+              aria-label={`Entrar como ${account.label} (${account.detail})`}
             >
               <strong>{account.label}</strong>
               <span>{account.detail}</span>
@@ -93,10 +94,8 @@ export const LoginPage = () => {
       </div>
 
       <p className={styles.switch}>
-        ¿Tiene paneles y aún no tiene cuenta? <Link to="/registro">Créela aquí</Link>
-      </p>
-      <p className={styles.switch}>
-        ¿Todavía no tiene paneles? <Link to="/agendar">Calcule su ahorro</Link>
+        ¿Sin cuenta? <Link to="/registro">Créela aquí</Link> · ¿Sin paneles?{' '}
+        <Link to="/agendar">Calcule su ahorro</Link>
       </p>
     </>
   );

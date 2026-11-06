@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { addShare } from '../../../services/leadsService.js';
 import { buildShareUrl } from '../../../shared/utils/shareUrl.js';
 import { formatUsd } from '../../../shared/utils/format.js';
+import { downloadBlob, renderShareImage } from '../shareImage.js';
 import styles from './Family.module.css';
 
 /** La tarjeta del ahorro, lista para WhatsApp, con el link personal de la familia. */
@@ -20,6 +21,13 @@ export const ShareCard = ({ family, summary }) => {
     } catch {
       // La persona cerró el menú de compartir.
     }
+  };
+
+  const saveImage = async () => {
+    const blob = await renderShareImage({ family, summary });
+    if (!blob) return;
+    addShare({ refCode: family.code, channel: 'imagen' });
+    downloadBlob(blob, `mi-ahorro-sol-de-casa-${summary.lastMonth.label.replace(' ', '-')}.png`);
   };
 
   const copy = async () => {
@@ -63,6 +71,9 @@ export const ShareCard = ({ family, summary }) => {
               Publicar o compartir
             </button>
           )}
+          <button type="button" className={styles.secondary} onClick={saveImage}>
+            Descargar imagen para publicar
+          </button>
           <button type="button" className={styles.secondary} onClick={copy}>
             {copied ? 'Link copiado ✓' : 'Copiar mi link'}
           </button>

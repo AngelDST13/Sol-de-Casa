@@ -9,7 +9,10 @@ npm run setup   # instala las dependencias de sol-de-casa-web (solo la primera v
 npm run dev     # levanta la app en http://localhost:5173
 npm run test
 npm run build
+npm run build:archivo   # un solo HTML que abre sin instalar nada
 ```
+
+Qué pide cada documento del caso y dónde está: [CUMPLIMIENTO.md](sol-de-casa-web/CUMPLIMIENTO.md).
 
 Cuentas de demostración (contraseña `solar2026`): `familia@soldecasa.cr` y `andres@soldecasa.cr`.
 

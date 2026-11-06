@@ -49,11 +49,11 @@
 .panel {
   display: flex;
   flex-direction: column;
-  padding: var(--space-5) var(--space-4) var(--space-7);
+  padding: var(--space-4) var(--space-4) var(--space-5);
 }
 .mobileLogo {
   text-decoration: none;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
 }
 .form {
   width: 100%;
@@ -70,7 +70,19 @@
   .mobileLogo {
     display: none;
   }
+  .shell {
+    height: 100dvh;
+  }
   .panel {
-    padding: var(--space-7);
+    padding: var(--space-5) var(--space-7);
+    overflow-y: auto;
+  }
+}
+@media (max-height: 700px) and (max-width: 959px) {
+  .mobileLogo {
+    margin-bottom: var(--space-2);
+  }
+  .panel {
+    padding-top: var(--space-3);
   }
 }
