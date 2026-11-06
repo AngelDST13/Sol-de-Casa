@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '../../shared/components/Logo.jsx';
+import { ThemeToggle } from '../../shared/components/ThemeToggle.jsx';
+import { openCookieSettings } from '../../services/preferencesService.js';
 import styles from './SiteFooter.module.css';
 
 export const SiteFooter = () => (
@@ -23,10 +25,15 @@ export const SiteFooter = () => (
         <Link to="/#como-funciona">Cómo funciona</Link>
         <Link to="/#preguntas">Preguntas frecuentes</Link>
         <Link to="/iniciar-sesion">Acceso del equipo</Link>
+        <Link to="/privacidad">Privacidad</Link>
+        <button type="button" className={styles.linkButton} onClick={openCookieSettings}>
+          Preferencias de cookies
+        </button>
       </div>
     </div>
     <div className={`container ${styles.legal}`}>
       <span>© 2026 Sol de Casa</span>
+      <ThemeToggle tone="night" />
       <span>
         Prototipo con fines educativos (Caso C). Lo marcado como «simulado» es inventado para la demostración.
       </span>

@@ -1,21 +1,24 @@
 import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
 import { StatTile } from '../../../shared/components/index.js';
-import { EmptyState } from '../../../shared/components/EmptyState.jsx';
-import { StatusBadge, SourceTag } from '../../../shared/components/StatusBadge.jsx';
+import { SourceTag } from '../../../shared/components/StatusBadge.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
 import { useLeads } from '../../../shared/hooks/useLeads.js';
 import { useActivity, useSettings, useTeam } from '../../../shared/hooks/useStores.js';
 import { useCaseParams } from '../../../shared/hooks/CaseParamsContext.jsx';
-import { LEAD_SOURCES } from '../../../services/leadsService.js';
 import { calculateMonth, referralSaleCost } from '../../../shared/model/index.js';
 import { can } from '../../../shared/utils/permissions.js';
-import { formatInteger, formatUsd } from '../../../shared/utils/format.js';
-import { formatTime, sameDay } from '../../../shared/utils/dates.js';
+import { formatInteger, formatPercent, formatUsd } from '../../../shared/utils/format.js';
 import { minutesSince, timeAgo } from '../../../shared/utils/time.js';
+import { useDashboardStats } from '../hooks/useDashboardStats.js';
+import { ActivityCard, LeadsTrendChart, MoneyCard, OriginCard, PendingStrip, VisitsCard } from './DashboardBlocks.jsx';
 import styles from './TeamHome.module.css';
 
-const DAY = 24 * 60;
+/** Con pocas solicitudes, un porcentaje engaña (de 1 a 9 es «+800 %»): se muestran cantidades. */
+const trendText = (current, previous) => {
+  const diff = current - previous;
+  if (diff === 0) return `Igual que la semana anterior (${formatInteger(previous)})`;
+  return `${diff > 0 ? '▲' : '▼'} ${formatInteger(Math.abs(diff))} ${diff > 0 ? 'más' : 'menos'} que la semana anterior (${formatInteger(previous)})`;
+};
 
 /** Resumen del día. Cada puesto ve lo que le toca: el técnico, sus visitas; la asesora y Andrés, todo. */
 export const PanelHomePage = () => {
@@ -25,170 +28,113 @@ export const PanelHomePage = () => {
   const settings = useSettings();
   const technicians = useTeam(['tecnico']);
   const { params } = useCaseParams();
+  const isTechnician = user.position === 'tecnico';
+  const stats = useDashboardStats(leads, {
+    responseGoalMinutes: settings.responseGoalMinutes,
+    onlyTechnicianId: isTechnician ? user.id : null,
+  });
   const month = calculateMonth(params);
   const referral = referralSaleCost();
-  const isTechnician = user.position === 'tecnico';
-
-  const stats = useMemo(() => {
-    const today = new Date();
-    const pending = leads.filter((lead) => lead.status === 'nuevo');
-    const visitsToday = leads
-      .filter(
-        (lead) =>
-          lead.visitAt &&
-          lead.status !== 'perdido' &&
-          sameDay(new Date(lead.visitAt), today) &&
-          (!isTechnician || lead.technicianId === user.id),
-      )
-      .sort((a, b) => new Date(a.visitAt) - new Date(b.visitAt));
-    const week = leads.filter((lead) => minutesSince(lead.createdAt) <= 7 * DAY);
-    const scheduled = leads.filter((lead) => lead.status === 'agendado');
-    const signedMonth = leads.filter((lead) => lead.status === 'firmado' && minutesSince(lead.createdAt) <= 30 * DAY);
-    const monthVisits = leads.filter((lead) => {
-      if (!lead.visitAt || lead.status === 'perdido') return false;
-      const date = new Date(lead.visitAt);
-      return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
-    }).length;
-    const bySource = Object.keys(LEAD_SOURCES).map((source) => ({
-      source,
-      count: leads.filter((lead) => lead.source === source).length,
-    }));
-    return { pending, visitsToday, week, scheduled, signedMonth, monthVisits, bySource };
-  }, [leads, isTechnician, user.id]);
-
   const capacity = technicians.length * settings.visitsPerTechnician;
-  const maxSource = Math.max(1, ...stats.bySource.map((item) => item.count));
-  const hour = new Date().getHours();
+
+  const now = new Date();
+  const hour = now.getHours();
   const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
+  const longDate = now.toLocaleDateString('es-CR', { weekday: 'long', day: 'numeric', month: 'long' });
+  const today = longDate.charAt(0).toUpperCase() + longDate.slice(1);
 
   return (
     <div className={styles.page}>
       <header className={styles.head}>
-        <p>{greeting},</p>
+        <p>
+          {greeting} · <span className={styles.date}>{today}</span>
+        </p>
         <h1>{user.name.split(' ')[0]}.</h1>
       </header>
 
-      {can(user, 'solicitudes') && (
-        <section className={`${styles.callNow} panel-grid`} aria-labelledby="llamar-title">
-          <div>
-            <p className={styles.eyebrow}>Llamar ahora</p>
-            <h2 id="llamar-title">
-              {stats.pending.length === 0
-                ? 'No hay solicitudes esperando.'
-                : `${formatInteger(stats.pending.length)} ${stats.pending.length === 1 ? 'persona espera' : 'personas esperan'} su llamada.`}
-            </h2>
-            <p className={styles.callHint}>
-              La meta es llamar en menos de {settings.responseGoalMinutes} minutos: con eso el contacto de Meta sube de
-              55 % a 80 % (supuesto 7).
-            </p>
-          </div>
-          <ul className={styles.callList}>
-            {stats.pending.slice(0, 4).map((lead) => {
-              const late = minutesSince(lead.createdAt) > settings.responseGoalMinutes;
-              return (
-                <li key={lead.id}>
-                  <div>
-                    <strong>{lead.name}</strong>
-                    <span>
-                      <SourceTag source={lead.source} /> · {timeAgo(lead.createdAt)}
-                      {late && <em className={styles.late}>Esperando</em>}
-                    </span>
-                  </div>
-                  <a href={`tel:${lead.phone.replace(/\s/g, '')}`} className={styles.callButton}>
-                    Llamar
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-          <Link to="/panel/solicitudes" className={styles.allLink}>
-            Ver todas las solicitudes →
-          </Link>
-        </section>
-      )}
+      {!isTechnician && <PendingStrip stats={stats} />}
 
       {!isTechnician && (
         <div className={styles.kpis}>
-          <StatTile label="Solicitudes, últimos 7 días" value={formatInteger(stats.week.length)} />
-          <StatTile label="Visitas agendadas" value={formatInteger(stats.scheduled.length)} />
-          <StatTile label="Firmas, últimos 30 días" value={formatInteger(stats.signedMonth.length)} tone="good" />
+          <StatTile
+            label="Solicitudes, 7 días"
+            value={formatInteger(stats.last7.length)}
+            detail={trendText(stats.last7.length, stats.prev7Count)}
+          />
+          <StatTile
+            label="Firmas, 30 días"
+            value={formatInteger(stats.signed30.length)}
+            detail={`${formatUsd(stats.revenue)} en ventas`}
+            tone="good"
+          />
           <StatTile
             label="Visitas del mes"
             value={`${formatInteger(stats.monthVisits)} / ${formatInteger(capacity)}`}
-            detail="Agendadas frente a la capacidad de los técnicos"
+            detail={`${formatPercent(capacity ? (stats.monthVisits / capacity) * 100 : 0)} de la capacidad`}
             tone={stats.monthVisits > capacity ? 'bad' : undefined}
+          />
+          <StatTile
+            label="Primera respuesta"
+            value={stats.responseAverage === null ? '—' : `${formatInteger(stats.responseAverage)} min`}
+            detail={`Meta: menos de ${settings.responseGoalMinutes} min`}
+            tone={
+              stats.responseAverage !== null && stats.responseAverage > settings.responseGoalMinutes ? 'bad' : undefined
+            }
           />
         </div>
       )}
 
-      <div className={styles.grid}>
-        <section className={styles.card}>
-          <div className={styles.cardHead}>
-            <h2>{isTechnician ? 'Sus visitas de hoy' : 'Visitas de hoy'}</h2>
-            <Link to="/panel/agenda">Agenda</Link>
-          </div>
-          {stats.visitsToday.length === 0 ? (
-            <EmptyState title="No hay visitas hoy">Las próximas aparecen en la agenda de la semana.</EmptyState>
-          ) : (
-            <ul className={styles.recent}>
-              {stats.visitsToday.map((lead) => (
-                <li key={lead.id}>
-                  <span>
-                    <strong>
-                      {formatTime(lead.visitAt)} · {lead.name}
-                    </strong>
-                    <small>
-                      {lead.neighborhood || 'Sin barrio'} · {lead.phone}
-                    </small>
-                  </span>
-                  <StatusBadge status={lead.status} />
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-
-        {!isTechnician && (
-          <section className={styles.card}>
-            <h2>Actividad reciente</h2>
-            {activity.length === 0 ? (
-              <EmptyState title="Sin actividad todavía">Aquí aparece cada cambio que hace el equipo.</EmptyState>
-            ) : (
-              <ul className={styles.activity}>
-                {activity.slice(0, 7).map((event) => (
-                  <li key={event.id}>
-                    <span>
-                      <strong>{event.actor}</strong> {event.action.charAt(0).toLowerCase() + event.action.slice(1)}
-                      {event.detail && <em> · {event.detail}</em>}
-                    </span>
-                    <small>{timeAgo(event.at)}</small>
+      {can(user, 'solicitudes') && (
+        <div className={styles.split2}>
+          <section className={`${styles.callNow} panel-grid`} aria-labelledby="llamar-title">
+            <div>
+              <p className={styles.eyebrow}>Llamar ahora</p>
+              <h2 id="llamar-title">
+                {stats.pending.length === 0
+                  ? 'Nadie espera su llamada.'
+                  : `${formatInteger(stats.pending.length)} ${stats.pending.length === 1 ? 'persona espera' : 'personas esperan'} su llamada.`}
+              </h2>
+              <p className={styles.callHint}>
+                Llamar en menos de {settings.responseGoalMinutes} minutos sube el contacto de Meta de 55 % a 80 %
+                (supuesto 7).
+              </p>
+            </div>
+            <ul className={styles.callList}>
+              {stats.pending.slice(0, 4).map((lead) => {
+                const late = minutesSince(lead.createdAt) > settings.responseGoalMinutes;
+                return (
+                  <li key={lead.id}>
+                    <div>
+                      <strong>{lead.name}</strong>
+                      <span>
+                        <SourceTag source={lead.source} /> · {timeAgo(lead.createdAt)}
+                        {late && <em className={styles.late}>Esperando</em>}
+                      </span>
+                    </div>
+                    <a href={`tel:${lead.phone.replace(/\s/g, '')}`} className={styles.callButton}>
+                      Llamar
+                    </a>
                   </li>
-                ))}
-              </ul>
-            )}
+                );
+              })}
+            </ul>
+            <Link to="/panel/solicitudes" className={styles.allLink}>
+              Ver todas las solicitudes →
+            </Link>
           </section>
-        )}
+          <LeadsTrendChart stats={stats} />
+        </div>
+      )}
+
+      <div className={styles.grid}>
+        <VisitsCard stats={stats} title={isTechnician ? 'Sus próximas visitas' : 'Visitas de hoy y esta semana'} />
+        {!isTechnician && <ActivityCard activity={activity} />}
       </div>
 
       {!isTechnician && (
-        <div className={styles.grid}>
-          <section className={styles.card}>
-            <h2>De dónde llegan</h2>
-            <ul className={styles.sources}>
-              {stats.bySource
-                .filter((item) => item.count > 0)
-                .map((item) => (
-                  <li key={item.source}>
-                    <span>{LEAD_SOURCES[item.source]}</span>
-                    <span className={styles.sourceBar}>
-                      <span data-source={item.source} style={{ width: `${(item.count / maxSource) * 100}%` }} />
-                    </span>
-                    <strong className="num">{formatInteger(item.count)}</strong>
-                  </li>
-                ))}
-            </ul>
-          </section>
-
+        <div className={styles.grid3}>
+          <MoneyCard stats={stats} />
+          <OriginCard stats={stats} />
           <section className={styles.card}>
             <h2>Lo que cuesta un cliente</h2>
             <ul className={styles.costs}>

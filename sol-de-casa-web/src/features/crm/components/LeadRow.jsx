@@ -2,6 +2,7 @@ import { SimTag } from '../../../shared/components/SimTag.jsx';
 import { SourceTag } from '../../../shared/components/StatusBadge.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
 import { useSettings } from '../../../shared/hooks/useStores.js';
+import { useToast } from '../../../shared/components/Toast.jsx';
 import { LEAD_STATUSES, setLeadStatus } from '../../../services/leadsService.js';
 import { savingsCalculator } from '../../../shared/model/index.js';
 import { formatUsd } from '../../../shared/utils/format.js';
@@ -14,6 +15,7 @@ const digits = (phone) => phone.replace(/\D/g, '');
 export const LeadRow = ({ lead, nameOf, onOpen }) => {
   const { user } = useAuth();
   const { responseGoalMinutes } = useSettings();
+  const notify = useToast();
   const saving = savingsCalculator(lead.monthlyBill).monthly;
   const waiting = lead.status === 'nuevo' && minutesSince(lead.createdAt) > responseGoalMinutes;
 
@@ -50,7 +52,13 @@ export const LeadRow = ({ lead, nameOf, onOpen }) => {
       <div className={styles.actions}>
         <label className={styles.statusSelect} data-status={lead.status}>
           <span className="visually-hidden">Estado de {lead.name}</span>
-          <select value={lead.status} onChange={(event) => setLeadStatus(lead.id, event.target.value, user.name)}>
+          <select
+            value={lead.status}
+            onChange={(event) => {
+              setLeadStatus(lead.id, event.target.value, user.name);
+              notify(`${lead.name.split(' ')[0]}: ${event.target.selectedOptions[0].text}`);
+            }}
+          >
             {LEAD_STATUSES.map((status) => (
               <option key={status.id} value={status.id}>
                 {status.label}

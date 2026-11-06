@@ -26,6 +26,10 @@ import { ClientsPage } from '../features/clients/index.js';
 import { ReportsPage } from '../features/reports/index.js';
 import { UsersPage } from '../features/users/index.js';
 import { SettingsPage } from '../features/settings/index.js';
+import { PrivacyPage } from '../features/legal/index.js';
+import { ToastProvider } from '../shared/components/Toast.jsx';
+import { CookieBanner } from '../shared/components/CookieBanner.jsx';
+import { RouteTitle } from './RouteTitle.jsx';
 import { NotFoundPage } from './NotFoundPage.jsx';
 
 /** Lleva al inicio de la página al cambiar de ruta, salvo que el link apunte a una sección (#ahorro). */
@@ -60,71 +64,76 @@ const LegacyNeighbor = () => {
 export const App = () => (
   <HashRouter>
     <AuthProvider>
-      <ScrollManager />
-      <Routes>
-        <Route element={<SiteLayout />}>
-          <Route index element={<LandingPage />} />
-        </Route>
+      <ToastProvider>
+        <ScrollManager />
+        <RouteTitle />
+        <CookieBanner />
+        <Routes>
+          <Route element={<SiteLayout />}>
+            <Route index element={<LandingPage />} />
+            <Route path="privacidad" element={<PrivacyPage />} />
+          </Route>
 
-        <Route element={<ReferralLayout />}>
-          <Route path="agendar" element={<NeighborPage />} />
-          <Route path="r/:code" element={<NeighborPage />} />
-        </Route>
+          <Route element={<ReferralLayout />}>
+            <Route path="agendar" element={<NeighborPage />} />
+            <Route path="r/:code" element={<NeighborPage />} />
+          </Route>
 
-        <Route element={<AuthLayout />}>
-          <Route path="iniciar-sesion" element={<LoginPage />} />
-          <Route path="registro" element={<RegisterPage />} />
-        </Route>
+          <Route element={<AuthLayout />}>
+            <Route path="iniciar-sesion" element={<LoginPage />} />
+            <Route path="registro" element={<RegisterPage />} />
+          </Route>
 
-        <Route
-          path="mi-cuenta"
-          element={
-            <RequireRole role="client">
-              <AppShell title="Portal del cliente" groups={PORTAL_GROUPS} primary={PORTAL_PRIMARY} />
-            </RequireRole>
-          }
-        >
-          <Route index element={<PortalHomePage />} />
-          <Route path="sistema" element={<SystemPage />} />
-          <Route path="compartir" element={<SharePage />} />
-          <Route path="vecinos" element={<NeighborsPage />} />
-        </Route>
+          <Route
+            path="mi-cuenta"
+            element={
+              <RequireRole role="client">
+                <AppShell title="Portal del cliente" groups={PORTAL_GROUPS} primary={PORTAL_PRIMARY} />
+              </RequireRole>
+            }
+          >
+            <Route index element={<PortalHomePage />} />
+            <Route path="sistema" element={<SystemPage />} />
+            <Route path="compartir" element={<SharePage />} />
+            <Route path="vecinos" element={<NeighborsPage />} />
+          </Route>
 
-        <Route
-          path="panel"
-          element={
-            <RequireRole role="team">
-              <CaseParamsProvider>
-                <PanelShell />
-              </CaseParamsProvider>
-            </RequireRole>
-          }
-        >
-          <Route index element={<PanelHomePage />} />
-          {[
-            ['solicitudes', 'solicitudes', <LeadsPage key="s" />],
-            ['agenda', 'agenda', <AgendaPage key="a" />],
-            ['clientes', 'clientes', <ClientsPage key="c" />],
-            ['reportes', 'reportes', <ReportsPage key="r" />],
-            ['referidos', 'referidos', <OwnerPanelPage key="o" />],
-            ['ficha', 'ficha', <GrowthSheetPage key="f" />],
-            ['anuncios', 'anuncios', <DashboardPage key="d" />],
-            ['escenarios', 'anuncios', <ScenariosPage key="e" />],
-            ['caja', 'anuncios', <SimulatorPage key="j" />],
-            ['recomendacion', 'anuncios', <ReportPage key="m" />],
-            ['usuarios', 'usuarios', <UsersPage key="u" />],
-            ['ajustes', 'ajustes', <SettingsPage key="g" />],
-          ].map(([path, area, page]) => (
-            <Route key={path} path={path} element={<RequireArea area={area}>{page}</RequireArea>} />
+          <Route
+            path="panel"
+            element={
+              <RequireRole role="team">
+                <CaseParamsProvider>
+                  <PanelShell />
+                </CaseParamsProvider>
+              </RequireRole>
+            }
+          >
+            <Route index element={<PanelHomePage />} />
+            {[
+              ['solicitudes', 'solicitudes', <LeadsPage key="s" />],
+              ['agenda', 'agenda', <AgendaPage key="a" />],
+              ['clientes', 'clientes', <ClientsPage key="c" />],
+              ['reportes', 'reportes', <ReportsPage key="r" />],
+              ['referidos', 'referidos', <OwnerPanelPage key="o" />],
+              ['ficha', 'ficha', <GrowthSheetPage key="f" />],
+              ['anuncios', 'anuncios', <DashboardPage key="d" />],
+              ['escenarios', 'anuncios', <ScenariosPage key="e" />],
+              ['caja', 'anuncios', <SimulatorPage key="j" />],
+              ['recomendacion', 'anuncios', <ReportPage key="m" />],
+              ['usuarios', 'usuarios', <UsersPage key="u" />],
+              ['ajustes', 'ajustes', <SettingsPage key="g" />],
+            ].map(([path, area, page]) => (
+              <Route key={path} path={path} element={<RequireArea area={area}>{page}</RequireArea>} />
+            ))}
+          </Route>
+
+          {Object.entries(LEGACY).map(([from, to]) => (
+            <Route key={from} path={from} element={<Navigate to={to} replace />} />
           ))}
-        </Route>
-
-        {Object.entries(LEGACY).map(([from, to]) => (
-          <Route key={from} path={from} element={<Navigate to={to} replace />} />
-        ))}
-        <Route path="vecino" element={<LegacyNeighbor />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+          <Route path="vecino" element={<LegacyNeighbor />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </ToastProvider>
     </AuthProvider>
   </HashRouter>
 );

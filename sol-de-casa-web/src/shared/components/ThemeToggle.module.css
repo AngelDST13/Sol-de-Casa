@@ -1,0 +1,48 @@
+.toggle {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.toggle button[aria-checked='true'] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+}
+.toggle[data-tone='night'] {
+  background: rgb(255 255 255 / 0.06);
+  border-color: var(--cell-line);
+}
+.toggle[data-tone='night'] button {
+  color: var(--on-night-muted);
+}
+.toggle[data-tone='night'] button[aria-checked='true'] {
+  background: var(--sun);
+  color: #121722;
+}
+
+.toggle[data-tone='night'] {
+  display: flex;
+  width: 100%;
+}
+.toggle[data-tone='night'] button {
+  flex: 1;
+  justify-content: center;
+  padding: 0 6px;
+  gap: 4px;
+}

@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 import { Button } from '../../../shared/components/Button.jsx';
+import { AnimatedNumber } from '../../../shared/components/AnimatedNumber.jsx';
 import { SAVINGS, savingsCalculator } from '../../../shared/model/index.js';
 import { formatCount, formatUsd } from '../../../shared/utils/format.js';
 import styles from './Landing.module.css';
@@ -54,12 +55,16 @@ export const SavingsSection = () => {
           <div className={styles.calcResults}>
             <div className={styles.calcMain}>
               <span>Ahorraría al mes</span>
-              <strong className="num">{formatUsd(result.monthly)}</strong>
+              <strong>
+                <AnimatedNumber value={result.monthly} format={formatUsd} duration={350} />
+              </strong>
               <small>Su recibo bajaría a unos {formatUsd(result.newBill)}</small>
             </div>
             <div>
               <span>Al año</span>
-              <strong className="num">{formatUsd(result.yearly)}</strong>
+              <strong>
+                <AnimatedNumber value={result.yearly} format={formatUsd} duration={350} />
+              </strong>
             </div>
             <div>
               <span>Recupera la instalación</span>

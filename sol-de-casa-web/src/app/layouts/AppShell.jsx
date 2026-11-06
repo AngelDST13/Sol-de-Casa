@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { Logo } from '../../shared/components/Logo.jsx';
 import { useAuth } from '../../shared/hooks/AuthContext.jsx';
 import { NavIcon } from './NavIcon.jsx';
+import { ThemeToggle } from '../../shared/components/ThemeToggle.jsx';
 import styles from './AppShell.module.css';
 
 /**
@@ -53,6 +54,9 @@ export const AppShell = ({ title, groups, primary }) => {
         </Link>
         <p className={styles.area}>{title}</p>
         <nav aria-label={title}>{links()}</nav>
+        <div className={styles.themeRow}>
+          <ThemeToggle tone="night" />
+        </div>
         <div className={styles.user}>
           <span className={styles.avatar}>{initials}</span>
           <span className={styles.userText}>
@@ -88,6 +92,7 @@ export const AppShell = ({ title, groups, primary }) => {
             <small>{user.email}</small>
           </div>
           <nav aria-label={`${title} (menú)`}>{links(() => setOpen(false))}</nav>
+          <ThemeToggle />
           <button type="button" className={styles.sheetLogout} onClick={signOut}>
             Cerrar sesión
           </button>
@@ -95,7 +100,9 @@ export const AppShell = ({ title, groups, primary }) => {
       )}
 
       <main id="contenido" className={styles.main}>
-        <Outlet />
+        <div key={location.pathname} className={styles.page}>
+          <Outlet />
+        </div>
       </main>
 
       <nav className={styles.bottomNav} aria-label="Principal">

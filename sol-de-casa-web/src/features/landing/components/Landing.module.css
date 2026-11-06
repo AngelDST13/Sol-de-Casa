@@ -860,3 +860,37 @@
 .calcResults strong {
   white-space: nowrap;
 }
+
+.bill {
+  animation: float 6s ease-in-out 1.2s infinite;
+}
+.sun {
+  animation: sun-breathe 9s ease-in-out infinite;
+}
+.heroActions a {
+  transition:
+    transform 0.16s var(--ease-out),
+    background-color 0.16s,
+    box-shadow 0.2s;
+}
+.heroActions a[data-variant='sun']:hover {
+  box-shadow: 0 10px 30px rgb(244 176 0 / 0.35);
+}
+.step,
+.includeList li,
+.faqItem summary,
+.quote {
+  transition: transform 0.2s var(--ease-out);
+}
+.step:hover .stepNumber {
+  color: var(--sun);
+}
+.quote:hover {
+  transform: translateY(-3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bill,
+  .sun {
+    animation: none;
+  }
+}

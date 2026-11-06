@@ -3,6 +3,7 @@ import { Button } from '../../../shared/components/Button.jsx';
 import { Dialog } from '../../../shared/components/Dialog.jsx';
 import { Field } from '../../../shared/components/Field.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
+import { useToast } from '../../../shared/components/Toast.jsx';
 import { LEAD_SOURCES, addLead, assignLead } from '../../../services/leadsService.js';
 import admin from '../../../shared/components/admin.module.css';
 
@@ -11,6 +12,7 @@ const EMPTY = { name: '', phone: '', neighborhood: '', monthlyBill: 110, source:
 /** Alta manual: alguien llamó o escribió y la asesora lo registra. */
 export const NewLeadDialog = ({ open, onClose, onCreated }) => {
   const { user } = useAuth();
+  const notify = useToast();
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const set = (key) => (event) => setForm({ ...form, [key]: event.target.value });
@@ -35,6 +37,7 @@ export const NewLeadDialog = ({ open, onClose, onCreated }) => {
     );
     if (user.position !== 'tecnico') assignLead(lead.id, user.id, user.name, user.name);
     setForm(EMPTY);
+    notify(`Solicitud de ${lead.name.split(' ')[0]} guardada`);
     onClose();
     onCreated?.(lead.id);
   };

@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { addShare } from '../../../services/leadsService.js';
 import { buildShareUrl } from '../../../shared/utils/shareUrl.js';
 import { formatUsd } from '../../../shared/utils/format.js';
+import { useToast } from '../../../shared/components/Toast.jsx';
 import { downloadBlob, renderShareImage } from '../shareImage.js';
 import styles from './Family.module.css';
 
 /** La tarjeta del ahorro, lista para WhatsApp, con el link personal de la familia. */
 export const ShareCard = ({ family, summary }) => {
   const [copied, setCopied] = useState(false);
+  const notify = useToast();
   const path = `/r/${family.code}`;
   const link = buildShareUrl(path);
   const message = `En ${summary.lastMonth.label} ahorramos ${formatUsd(summary.lastMonth.saved)} de luz con los paneles de Sol de Casa, y ya llevamos ${formatUsd(summary.total)}. Calcule cuánto ahorraría usted: ${link}`;
@@ -28,12 +30,14 @@ export const ShareCard = ({ family, summary }) => {
     if (!blob) return;
     addShare({ refCode: family.code, channel: 'imagen' });
     downloadBlob(blob, `mi-ahorro-sol-de-casa-${summary.lastMonth.label.replace(' ', '-')}.png`);
+    notify('Imagen descargada: ya la puede publicar');
   };
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(link);
       setCopied(true);
+      notify('Link copiado');
       addShare({ refCode: family.code, channel: 'link' });
       window.setTimeout(() => setCopied(false), 2000);
     } catch {

@@ -5,6 +5,7 @@ import { Field } from '../../../shared/components/Field.jsx';
 import { PageHeader } from '../../../shared/components/index.js';
 import { Section } from '../../../shared/components/Section.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
+import { useToast } from '../../../shared/components/Toast.jsx';
 import { useSettings, useTeam } from '../../../shared/hooks/useStores.js';
 import { generateInviteCode, updateSettings } from '../../../services/settingsService.js';
 import { logActivity } from '../../../services/activityService.js';
@@ -15,6 +16,7 @@ import admin from '../../../shared/components/admin.module.css';
 /** Ajustes del negocio y mantenimiento de la demostración. */
 export const SettingsPage = () => {
   const { user, logout } = useAuth();
+  const notify = useToast();
   const navigate = useNavigate();
   const settings = useSettings();
   const technicians = useTeam(['tecnico']);
@@ -29,6 +31,7 @@ export const SettingsPage = () => {
   const regenerate = () => {
     updateSettings({ teamInviteCode: generateInviteCode() });
     logActivity({ actor: user.name, action: 'Cambió el código de invitación del equipo' });
+    notify('Código nuevo listo');
   };
 
   const copyCode = async () => {

@@ -8,6 +8,8 @@ Sistema completo del **Caso C · Sol de Casa** (paneles solares para casas, vend
 | **Portal del cliente** (`/mi-cuenta`) | Familias con paneles | Su ahorro del mes y desde que instalaron, la tarjeta para compartir por WhatsApp con su link personal, sus vecinos y premios, y los datos de su sistema (mantenimiento y batería). |
 | **Panel del equipo** (`/panel`) | Andrés, asesoras y técnicos | Resumen del día (llamar ahora, visitas de hoy, actividad), solicitudes con ficha completa (asignar, agendar visita, notas, historial, alta manual, exportar CSV), agenda semanal de visitas con capacidad, clientes, reportes por canal y asesora, referidos y ficha de growth (sesión 2), análisis de anuncios (sesión 1), usuarios y ajustes. |
 
+Detalles de página real: aviso de cookies con «Solo necesarias» y «Aceptar» del mismo peso, página de privacidad (`#/privacidad`), tema claro, oscuro o del sistema, avisos que confirman cada acción, título de pestaña por página, animaciones que respetan «reducir movimiento». En el portal, la familia ve cuánto de la instalación ya pagó con su ahorro, consejos según su situación y sus metas. El resumen del panel muestra pendientes, solicitudes por día, ventas y cobros, visitas próximas, barrios y actividad.
+
 El vecino que abre el link de una familia (`/r/FAM-0137`) ve una página propia, sin menús, con el ahorro de esa familia, la calculadora y la agenda. La solicitud queda en el CRM con quién lo refirió, y cuando el equipo cambia el estado, la familia ve el avance en su cuenta.
 
 ## Cuentas de demostración
@@ -39,7 +41,7 @@ O desde `sol-de-casa-web/`:
 ```bash
 npm install
 npm run dev        # muestra una dirección «Network» para abrirla en el celular con el mismo wifi
-npm run test       # 28 pruebas: modelo de la sesión 1 y 2, cuentas y solicitudes
+npm run test       # 31 pruebas: modelo de la sesión 1 y 2, cuentas y solicitudes
 npm run build      # genera dist/ para cualquier hosting estático
 npm run build:archivo  # genera dist-archivo/index.html: un solo archivo que abre con doble clic
 npm run deploy     # publica en GitHub Pages (el sitio queda público)

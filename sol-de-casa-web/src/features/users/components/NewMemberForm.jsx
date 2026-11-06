@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '../../../shared/components/Button.jsx';
 import { Field } from '../../../shared/components/Field.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
+import { useToast } from '../../../shared/components/Toast.jsx';
 import { DEMO_PASSWORD, POSITIONS, createTeamMember } from '../../../services/authService.js';
 import admin from '../../../shared/components/admin.module.css';
 import styles from './Users.module.css';
@@ -10,6 +11,7 @@ const EMPTY = { name: '', email: '', position: 'asesora' };
 
 export const NewMemberForm = () => {
   const { user } = useAuth();
+  const notify = useToast();
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [created, setCreated] = useState(null);
@@ -25,6 +27,7 @@ export const NewMemberForm = () => {
     try {
       const member = await createTeamMember(form, user.name);
       setCreated(member);
+      notify(`Cuenta creada para ${member.name.split(' ')[0]}`);
       setForm(EMPTY);
     } catch (error) {
       setErrors({ [error.field ?? 'email']: error.message });

@@ -5,6 +5,7 @@ import { Section } from '../../../shared/components/Section.jsx';
 import { SimTag } from '../../../shared/components/SimTag.jsx';
 import { SourceTag, StatusBadge } from '../../../shared/components/StatusBadge.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
+import { useToast } from '../../../shared/components/Toast.jsx';
 import { useLeads } from '../../../shared/hooks/useLeads.js';
 import { useTeam } from '../../../shared/hooks/useStores.js';
 import { isAdmin } from '../../../shared/utils/permissions.js';
@@ -50,6 +51,7 @@ export const LeadDialog = ({ leadId, onClose }) => {
 
 const LeadDetail = ({ lead, onDeleted }) => {
   const { user } = useAuth();
+  const notify = useToast();
   const advisors = useTeam(['asesora', 'admin']);
   const technicians = useTeam(['tecnico']);
   const [visitAt, setVisitAt] = useState(() => toLocalInput(lead.visitAt ?? nextMorning()));
@@ -68,6 +70,7 @@ const LeadDetail = ({ lead, onDeleted }) => {
       { visitAt: new Date(visitAt).toISOString(), technicianId, technicianName: technician.name },
       user.name,
     );
+    notify(`Visita agendada con ${technician.name.split(' ')[0]}`);
   };
 
   const saveNote = (event) => {
@@ -75,6 +78,7 @@ const LeadDetail = ({ lead, onDeleted }) => {
     if (!note.trim()) return;
     addNote(lead.id, note, user.name);
     setNote('');
+    notify('Nota guardada');
   };
 
   return (
@@ -141,6 +145,7 @@ const LeadDetail = ({ lead, onDeleted }) => {
               onChange={(event) => {
                 const person = advisors.find((item) => item.id === event.target.value);
                 assignLead(lead.id, event.target.value, person?.name, user.name);
+                notify(person ? `Asignada a ${person.name.split(' ')[0]}` : 'Quedó sin asignar');
               }}
             >
               <option value="">Sin asignar</option>
@@ -243,6 +248,7 @@ const LeadDetail = ({ lead, onDeleted }) => {
           onClick={() => {
             if (!armed) return setArmed(true);
             deleteLead(lead.id, user.name);
+            notify('Solicitud eliminada', 'bad');
             onDeleted();
           }}
           onBlur={() => setArmed(false)}

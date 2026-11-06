@@ -4,11 +4,14 @@ import { formatInteger } from '../../../shared/utils/format.js';
 import { useMyFamily } from '../hooks/useMyFamily.js';
 import { useFamilyReferrals } from '../hooks/useFamilyReferrals.js';
 import { SavingsHero } from './SavingsHero.jsx';
+import { Milestones, PaybackCard, TipsCard } from './Insights.jsx';
 import styles from './Family.module.css';
 
 export const PortalHomePage = () => {
   const { user, family, history, summary } = useMyFamily();
   const game = useFamilyReferrals(family);
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
 
   return (
     <div className={styles.page}>
@@ -16,9 +19,12 @@ export const PortalHomePage = () => {
         <p>
           {family.name} · {family.neighborhood} <SimTag />
         </p>
-        <h1>Hola, {user.name.split(' ')[0]}.</h1>
+        <h1>
+          {greeting}, {user.name.split(' ')[0]}.
+        </h1>
       </header>
       <SavingsHero family={family} history={history} summary={summary} />
+      <PaybackCard summary={summary} />
       <div className={styles.quick}>
         <Link to="/mi-cuenta/compartir" className={styles.quickCard} data-tone="sun">
           <span>Comparta su ahorro</span>
@@ -35,6 +41,8 @@ export const PortalHomePage = () => {
           </small>
         </Link>
       </div>
+      <TipsCard summary={summary} sharesCount={game.sharesCount} monthsOfPlan={game.monthsOfPlan} />
+      <Milestones summary={summary} />
     </div>
   );
 };

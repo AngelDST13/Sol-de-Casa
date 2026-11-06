@@ -45,3 +45,19 @@
     grid-template-columns: 2fr 1fr 1fr;
   }
 }
+
+.linkButton {
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  color: var(--on-night);
+  font-weight: 600;
+  cursor: pointer;
+}
+.linkButton:hover {
+  color: var(--sun);
+}
+.legal {
+  align-items: center;
+}

@@ -1,0 +1,75 @@
+.page {
+  padding-top: calc(68px + var(--space-7));
+  padding-bottom: var(--space-8);
+  max-width: 780px;
+}
+.eyebrow {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--green);
+}
+.page h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: -0.025em;
+  margin-top: var(--space-2);
+}
+.page h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin: var(--space-6) 0 var(--space-2);
+}
+.page p {
+  color: var(--muted);
+}
+.lead {
+  font-size: 1.08rem;
+  margin-top: var(--space-3);
+}
+.table {
+  margin-top: var(--space-5);
+  border-top: 2px solid var(--ink);
+}
+.row {
+  display: grid;
+  gap: 4px var(--space-4);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+.row span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.row em {
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.78rem;
+  color: var(--good);
+}
+.row em[data-kind='Opcional'] {
+  color: var(--warn);
+}
+@media (min-width: 700px) {
+  .row {
+    grid-template-columns: 180px 1fr auto;
+    align-items: center;
+  }
+}
+.button {
+  margin-top: var(--space-3);
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 2px solid var(--ink);
+  background: var(--ink);
+  color: var(--bg);
+  font-weight: 800;
+  cursor: pointer;
+}
+.note {
+  margin-top: var(--space-6);
+  font-size: 0.82rem;
+}

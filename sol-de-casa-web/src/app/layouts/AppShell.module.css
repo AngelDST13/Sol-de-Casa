@@ -241,3 +241,35 @@
     width: 100%;
   }
 }
+
+.page {
+  animation: page-in 0.35s var(--ease-out);
+}
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    animation: none;
+  }
+}
+.themeRow {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .themeRow {
+    display: block;
+    margin-top: auto;
+    padding: var(--space-3) 12px;
+  }
+  .themeRow + .user {
+    margin-top: 0;
+  }
+}

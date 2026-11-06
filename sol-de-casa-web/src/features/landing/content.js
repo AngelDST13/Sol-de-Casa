@@ -1,10 +1,10 @@
 // Textos del sitio público. Todo dato sale del caso; lo inventado lleva «simulado».
 
 export const PROOF = [
-  { value: '420', label: 'casas con paneles instalados' },
-  { value: '4,9 ★', label: '210 reseñas en Google' },
-  { value: '70 %', label: 'del recibo ahorra el cliente promedio' },
-  { value: '12 años', label: 'de Andrés como electricista antes de fundar Sol de Casa' },
+  { to: 420, decimals: 0, suffix: '', label: 'casas con paneles instalados' },
+  { to: 4.9, decimals: 1, suffix: ' ★', label: '210 reseñas en Google' },
+  { to: 70, decimals: 0, suffix: ' %', label: 'del recibo ahorra el cliente promedio' },
+  { to: 12, decimals: 0, suffix: ' años', label: 'de Andrés como electricista antes de fundar Sol de Casa' },
 ];
 
 export const STEPS = [
