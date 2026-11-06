@@ -1,0 +1,66 @@
+.field {
+  display: grid;
+  gap: 6px;
+}
+.label {
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+.control {
+  position: relative;
+}
+.input {
+  width: 100%;
+  min-height: 50px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 0 14px;
+  font-size: 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color 0.15s;
+}
+select.input {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) 50%,
+    calc(100% - 15px) 50%;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 36px;
+}
+.input:hover {
+  border-color: var(--muted);
+}
+.input:focus {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--sun) 35%, transparent);
+}
+.input[aria-invalid='true'] {
+  border-color: var(--bad);
+}
+.toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-weight: 700;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.error {
+  color: var(--bad);
+  font-weight: 600;
+  font-size: 0.82rem;
+}

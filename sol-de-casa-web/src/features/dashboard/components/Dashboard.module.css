@@ -1,0 +1,26 @@
+.layout {
+  display: grid;
+  gap: var(--space-4);
+  align-items: start;
+}
+.main {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+.charts {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 760px) {
+  .charts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 330px minmax(0, 1fr);
+  }
+}

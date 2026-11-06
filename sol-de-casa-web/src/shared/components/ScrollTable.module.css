@@ -1,0 +1,64 @@
+.wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+}
+.table th,
+.table td {
+  padding: 9px 10px;
+  text-align: right;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.table th:first-child,
+.table td:first-child {
+  text-align: left;
+  white-space: normal;
+  min-width: 120px;
+  max-width: 200px;
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 1;
+}
+.table thead th {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 2px solid var(--ink);
+  vertical-align: bottom;
+}
+.table[data-compact='true'] th,
+.table[data-compact='true'] td {
+  padding: 6px 8px;
+  font-size: 0.82rem;
+}
+.table[data-compact='true'] th:first-child,
+.table[data-compact='true'] td:first-child {
+  min-width: 0;
+}
+.table tr[data-emphasis='true'] td {
+  font-weight: 800;
+}
+.table tr[data-alert='true'] td {
+  background: color-mix(in srgb, var(--bad) 12%, var(--surface));
+}
+.table tr[data-highlight='true'] td {
+  background: var(--sun-soft);
+}
+
+@media (max-width: 599px) {
+  .table th,
+  .table td {
+    padding: 8px 7px;
+    font-size: 0.84rem;
+  }
+}

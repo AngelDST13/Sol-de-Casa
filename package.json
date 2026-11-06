@@ -1,0 +1,13 @@
+{
+  "name": "sol-de-casa",
+  "private": true,
+  "description": "Atajos para correr la app desde esta carpeta. El proyecto React vive en sol-de-casa-web/.",
+  "scripts": {
+    "setup": "npm --prefix sol-de-casa-web install",
+    "dev": "npm --prefix sol-de-casa-web run dev",
+    "build": "npm --prefix sol-de-casa-web run build",
+    "preview": "npm --prefix sol-de-casa-web run preview",
+    "test": "npm --prefix sol-de-casa-web run test",
+    "lint": "npm --prefix sol-de-casa-web run lint"
+  }
+}

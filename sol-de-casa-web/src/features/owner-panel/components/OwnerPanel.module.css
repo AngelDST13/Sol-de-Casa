@@ -1,0 +1,236 @@
+.stack {
+  display: grid;
+  gap: var(--space-4);
+}
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.small {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: var(--space-3);
+}
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sun);
+}
+.weekly {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+  display: grid;
+  gap: var(--space-4);
+}
+.weekly .small {
+  color: inherit;
+  opacity: 0.7;
+}
+.weeklyNumber {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 15vw, 5rem);
+  line-height: 1;
+}
+.weeklyLabel {
+  font-weight: 700;
+}
+.spark {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 110px;
+}
+.spark span {
+  flex: 1;
+  background: rgb(255 255 255 / 0.25);
+  border-radius: 4px 4px 0 0;
+  min-height: 3px;
+}
+.spark span[data-last='true'] {
+  background: var(--sun);
+}
+.spark i {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 2px dashed var(--sun);
+}
+@media (min-width: 760px) {
+  .weekly {
+    grid-template-columns: 1fr 1fr;
+    align-items: end;
+  }
+}
+.funnel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.funnel li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px 40px;
+  grid-template-areas: 'label value rate' 'bar bar bar';
+  gap: 2px var(--space-2);
+  align-items: center;
+  font-size: 0.88rem;
+}
+.funnelLabel {
+  grid-area: label;
+}
+.funnel strong {
+  grid-area: value;
+  text-align: right;
+}
+.funnel small {
+  grid-area: rate;
+  text-align: right;
+  color: var(--muted);
+}
+.funnelBar {
+  grid-area: bar;
+  height: 10px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.funnelBar span {
+  display: block;
+  height: 100%;
+  background: var(--green);
+  border-radius: 99px;
+}
+@media (min-width: 760px) {
+  .funnel li {
+    grid-template-columns: 220px minmax(0, 1fr) 50px 44px;
+    grid-template-areas: 'label bar value rate';
+  }
+}
+.ab {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+.ab > div {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+.ab > div[data-win='true'] {
+  background: var(--sun-soft);
+  border-color: var(--sun);
+}
+.ab span,
+.ab small {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.ab strong {
+  font-size: 2rem;
+  font-weight: 800;
+}
+.costs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+.costs li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px var(--space-2);
+  font-size: 0.88rem;
+}
+.costs strong {
+  text-align: right;
+}
+.costBar {
+  grid-column: 1 / -1;
+  height: 14px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.costBar span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+}
+.costBar span[data-tone='meta'] {
+  background: var(--meta);
+}
+.costBar span[data-tone='google'] {
+  background: var(--google);
+}
+.costBar span[data-tone='sun'] {
+  background: var(--sun);
+}
+.liveStats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.liveStats > div {
+  background: var(--surface-2);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+.liveStats span {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+.liveStats strong {
+  font-size: 1.6rem;
+}
+.unused-clear {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 99px;
+  padding: 6px 12px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.referralList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.referralList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+.referralList li > span:first-child {
+  display: grid;
+  min-width: 0;
+}
+.referralList small {
+  color: var(--muted);
+  font-size: 0.78rem;
+}

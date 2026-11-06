@@ -1,0 +1,35 @@
+.alert {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.92rem;
+  border: 1px solid;
+}
+.icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  font-size: 0.8rem;
+  color: #fff;
+}
+.alert[data-tone='good'] {
+  border-color: var(--good);
+  background: color-mix(in srgb, var(--good) 10%, transparent);
+}
+.alert[data-tone='good'] .icon {
+  background: var(--good);
+}
+.alert[data-tone='bad'] {
+  border-color: var(--bad);
+  background: color-mix(in srgb, var(--bad) 10%, transparent);
+}
+.alert[data-tone='bad'] .icon {
+  background: var(--bad);
+}

@@ -1,0 +1,110 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 30;
+  padding-top: env(safe-area-inset-top, 0px);
+  transition:
+    background-color 0.25s,
+    box-shadow 0.25s;
+}
+.header[data-tone='light'],
+.header[data-scrolled='true'] {
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px);
+  -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  box-shadow: 0 1px 0 var(--line);
+}
+.inner {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.header a {
+  text-decoration: none;
+}
+.nav {
+  display: none;
+  gap: 4px;
+}
+.link,
+.login {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--ink);
+}
+.header[data-tone='dark']:not([data-scrolled='true']) .link,
+.header[data-tone='dark']:not([data-scrolled='true']) .login {
+  color: var(--on-night);
+}
+.link:hover,
+.login:hover {
+  background: color-mix(in srgb, var(--sun) 22%, transparent);
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.login,
+.cta {
+  display: none;
+}
+.burger {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--sun);
+  display: grid;
+  place-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.burger span {
+  display: block;
+  width: 20px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: #121722;
+  transition: transform 0.2s var(--ease-out);
+}
+.burger[aria-expanded='true'] span:first-child {
+  transform: translateY(4.25px) rotate(45deg);
+}
+.burger[aria-expanded='true'] span:last-child {
+  transform: translateY(-4.25px) rotate(-45deg);
+}
+.drawer {
+  display: grid;
+  gap: 4px;
+  padding: var(--space-3) var(--space-4) var(--space-5);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.drawer a:not([data-variant]) {
+  padding: 14px 4px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-bottom: 1px solid var(--line);
+}
+.drawer > :last-child {
+  margin-top: var(--space-3);
+}
+
+@media (min-width: 980px) {
+  .nav {
+    display: flex;
+  }
+  .login,
+  .cta {
+    display: inline-flex;
+  }
+  .burger,
+  .drawer {
+    display: none;
+  }
+}

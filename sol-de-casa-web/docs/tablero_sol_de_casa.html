@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sol de Casa · Tablero de decisiones</title>
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#f3f2ee; --card:#ffffff; --ink:#151515; --muted:#5d5d5d; --line:#dcdad2;
+  --meta:#d6336c; --goog:#2f6fdb; --sun:#f5b400; --good:#1f8f55; --warn:#d99100; --bad:#c92a2a; --accent:#1f8f55;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121212; --card:#1e1e1e; --ink:#f1f1ee; --muted:#a8a8a2; --line:#34342f;
+    --meta:#ff6b9d; --goog:#6ea2ff; --sun:#ffc933; --good:#4cc784; --warn:#f0b43c; --bad:#ff6b6b; --accent:#4cc784;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121212; --card:#1e1e1e; --ink:#f1f1ee; --muted:#a8a8a2; --line:#34342f;
+  --meta:#ff6b9d; --goog:#6ea2ff; --sun:#ffc933; --good:#4cc784; --warn:#f0b43c; --bad:#ff6b6b; --accent:#4cc784;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.45}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+header h1{margin:0;font-size:1.6rem;letter-spacing:-.01em}
+header p{margin:.25rem 0 0;color:var(--muted)}
+.tabs{display:flex;gap:8px;margin:14px 0}
+.tab{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--sun);color:#151515;border-color:var(--sun)}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.card h2{margin:0 0 8px;font-size:1rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.ctl{margin:10px 0}
+.ctl label{display:flex;justify-content:space-between;gap:8px;font-size:.88rem}
+.ctl label b{font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sub{margin:12px 0 2px;font-weight:700;font-size:.9rem}
+.meta-c{color:var(--meta)} .goog-c{color:var(--goog)}
+button.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:10px 0;font-size:.9rem}
+.chk input{margin-top:3px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{padding:6px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+thead th{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+tr.tot td{font-weight:700}
+.pill{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:700;color:#fff;font-size:.85rem}
+.g{background:var(--good)} .y{background:var(--warn);color:#151515} .r{background:var(--bad)}
+.alert{padding:10px 12px;border-radius:10px;margin:10px 0;font-weight:600}
+.alert.ok{background:color-mix(in srgb,var(--good) 18%,transparent);border:1px solid var(--good)}
+.alert.bad{background:color-mix(in srgb,var(--bad) 18%,transparent);border:1px solid var(--bad)}
+.trap{border-left:6px solid var(--sun);padding:6px 12px;margin:0 0 10px;font-size:1.05rem;font-weight:700}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:12px}
+.cbox{position:relative;height:280px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.kpi{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--card)}
+.kpi span{display:block;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.04em}
+.kpi b{font-size:1.35rem;font-variant-numeric:tabular-nums}
+.note{color:var(--muted);font-size:.82rem;margin-top:8px}
+select{font:inherit;padding:7px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>☀️ Sol de Casa · ¿Más leads es mejor?</h1>
+  <p>Caso C, Sesión 1. Mueva los controles y vea el costo real de conseguir un cliente. Cifras mensuales en dólares. Caso ficticio con fines educativos.</p>
+</header>
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" id="tab1" onclick="showTab(1)">Tablero (nivel 2)</button>
+  <button class="tab" role="tab" aria-selected="false" id="tab2" onclick="showTab(2)">Simulador de caja 24 meses (nivel 3)</button>
+</div>
+
+<!-- ================= TABLERO ================= -->
+<section id="p1">
+<div class="grid">
+  <aside class="card" id="controls">
+    <h2>Controles</h2>
+    <div class="sub meta-c">Inversión en Meta (USD/mes)</div>
+    <div class="ctl"><label for="invM">Inversión en Meta <b id="invM_v"></b></label><input type="range" id="invM" min="0" max="10000" step="250"></div>
+    <div class="sub goog-c">Inversión en Google (USD/mes)</div>
+    <div class="ctl"><label for="invG">Inversión en Google <b id="invG_v"></b></label><input type="range" id="invG" min="0" max="8000" step="250"></div>
+    <div class="chk"><input type="checkbox" id="filt"><label for="filt"><b>Respuesta en menos de 5 minutos + dos preguntas de filtro en Meta</b><br><span class="note">Supuesto 7 del caso (sacado de casos parecidos, no medido): leads de Meta −20 % y tasas 80 / 40 / 75 / 22 %.</span></label></div>
+
+    <div class="sub meta-c">Embudo de Meta</div>
+    <div class="ctl"><label for="cM">Contacto <b id="cM_v"></b></label><input type="range" id="cM" min="0" max="100" step="1"></div>
+    <div class="ctl"><label for="aM">Agenda visita <b id="aM_v"></b></label><input type="range" id="aM" min="0" max="100" step="1"></div>
+    <div class="ctl"><label for="vM">Visita hecha <b id="vM_v"></b></label><input type="range" id="vM" min="0" max="100" step="1"></div>
+    <div class="ctl"><label for="kM">Cierre <b id="kM_v"></b></label><input type="range" id="kM" min="0" max="100" step="1"></div>
+    <div class="sub goog-c">Embudo de Google</div>
+    <div class="ctl"><label for="cG">Contacto <b id="cG_v"></b></label><input type="range" id="cG" min="0" max="100" step="1"></div>
+    <div class="ctl"><label for="aG">Agenda visita <b id="aG_v"></b></label><input type="range" id="aG" min="0" max="100" step="1"></div>
+    <div class="ctl"><label for="vG">Visita hecha <b id="vG_v"></b></label><input type="range" id="vG" min="0" max="100" step="1"></div>
+    <div class="ctl"><label for="kG">Cierre <b id="kG_v"></b></label><input type="range" id="kG" min="0" max="100" step="1"></div>
+
+    <div class="sub">Operación y precio</div>
+    <div class="ctl"><label for="cv">Costo por visita (USD) <b id="cv_v"></b></label><input type="range" id="cv" min="0" max="200" step="5"></div>
+    <div class="ctl"><label for="tec">Técnicos extra (+50 visitas c/u) <b id="tec_v"></b></label><input type="range" id="tec" min="0" max="2" step="1"></div>
+    <div class="ctl"><label for="precio">Precio de la instalación (USD) <b id="precio_v"></b></label><input type="range" id="precio" min="4000" max="9000" step="100"></div>
+    <div class="ctl"><label for="marg">Margen bruto (%) <b id="marg_v"></b></label><input type="range" id="marg" min="10" max="45" step="1"></div>
+    <div class="ctl"><label for="com">Comisión de la asesora (%) <b id="com_v"></b></label><input type="range" id="com" min="0" max="8" step="0.5"></div>
+    <div class="ctl"><label for="bat">Clientes que agregan la batería (%) <b id="bat_v"></b></label><input type="range" id="bat" min="0" max="50" step="1"></div>
+    <div class="note">Batería: $3.000, margen 20 %, comisión 3 %. Supuesto: el porcentaje aplica por venta.</div>
+    <p><button class="btn primary" onclick="resetAll()">Volver a los datos del caso</button></p>
+  </aside>
+
+  <main>
+    <div class="card">
+      <div class="trap" id="trap"></div>
+      <div id="capAlert"></div>
+      <div class="scroll"><table id="tbl"></table></div>
+      <div class="note">LTV:CAC = contribución de una venta / CAC real (una sola compra). Semáforo: rojo menor a 1, amarillo de 1 a 3, verde 3 o más. Valor de una visita = cierre × contribución − costo de la visita.</div>
+    </div>
+    <div class="charts">
+      <div class="card"><h2>Embudo de cada canal</h2><div class="cbox"><canvas id="c1"></canvas></div></div>
+      <div class="card"><h2>CPL frente a CAC real</h2><div class="cbox"><canvas id="c2"></canvas></div></div>
+      <div class="card"><h2>Visitas pedidas frente a la capacidad</h2><div class="cbox"><canvas id="c3"></canvas></div></div>
+      <div class="card"><h2>La trampa: lead barato, cliente caro</h2><div class="cbox"><canvas id="c4"></canvas></div></div>
+    </div>
+  </main>
+</div>
+</section>
+
+<!-- ================= SIMULADOR ================= -->
+<section id="p2" hidden>
+<div class="grid">
+  <aside class="card">
+    <h2>Plan de 24 meses</h2>
+    <div class="ctl"><label for="preset">Plan</label>
+      <select id="preset">
+        <option value="actual">Actual: $4.000 Meta + $4.000 Google</option>
+        <option value="agencia">Propuesta de la agencia: $8.000 Meta</option>
+        <option value="filtro">Propio 1: filtro + respuesta rápida</option>
+        <option value="tecnico">Propio 2: filtro + 1 técnico</option>
+        <option value="ganador" selected>Propio 3: ganador (2 técnicos, Meta por escalones)</option>
+        <option value="custom">Personalizado</option>
+      </select></div>
+    <div id="customBox" hidden>
+      <div class="ctl"><label for="sM">Meta, todos los meses <b id="sM_v"></b></label><input type="range" id="sM" min="0" max="10000" step="250"></div>
+      <div class="ctl"><label for="sG">Google, todos los meses <b id="sG_v"></b></label><input type="range" id="sG" min="0" max="8000" step="250"></div>
+      <div class="ctl"><label for="sF">Filtro en Meta desde el mes (0 = nunca) <b id="sF_v"></b></label><input type="range" id="sF" min="0" max="24" step="1"></div>
+      <div class="ctl"><label for="sH1">Primer técnico extra en el mes (0 = ninguno) <b id="sH1_v"></b></label><input type="range" id="sH1" min="0" max="24" step="1"></div>
+      <div class="ctl"><label for="sH2">Segundo técnico extra en el mes (0 = ninguno) <b id="sH2_v"></b></label><input type="range" id="sH2" min="0" max="24" step="1"></div>
+    </div>
+    <p class="note">El simulador usa los precios, márgenes, costo por visita y tasas del tablero. Los datos de caja son los del caso: $12.000 en el banco, piso de $5.000, $18.000 de costos fijos, 22 ventas en el mes 0. Reglas: la caja no baja del piso, y desde el mes 19 la inversión total no baja de un mes al siguiente.</p>
+    <p class="note"><b>Ojo:</b> el plan ganador depende del supuesto 7 (el filtro de Meta). Si el filtro solo baja los leads y no mejora las tasas, ese mismo plan toca el piso. Pruébelo en el tablero.</p>
+  </aside>
+  <main>
+    <div class="kpis" id="kpis"></div>
+    <div id="ruleAlert"></div>
+    <div class="charts">
+      <div class="card"><h2>Caja mes a mes y piso</h2><div class="cbox"><canvas id="s1"></canvas></div></div>
+      <div class="card"><h2>Visitas pedidas frente a la capacidad</h2><div class="cbox"><canvas id="s2"></canvas></div></div>
+    </div>
+    <div class="card" style="margin-top:12px"><h2>Comparación de los planes del caso</h2><div class="scroll"><table id="cmp"></table></div></div>
+  </main>
+</div>
+</section>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* ============ DATOS DEL CASO ============ */
+var HM=[[0,0],[2000,280],[4000,500],[6000,680],[8000,840],[10000,960]];
+var HG=[[0,0],[2000,55],[4000,100],[6000,135],[8000,160]];
+var DEF={invM:4000,invG:4000,filt:false,cM:55,aM:30,vM:70,kM:18,cG:85,aG:55,vG:85,kG:30,cv:60,tec:0,precio:6500,marg:28,com:3,bat:0};
+var FIL={c:80,a:40,v:75,k:22}; var BASE_M={c:55,a:30,v:70,k:18};
+var FIX=18000,CAJA0=12000,PISO=5000,V0=22,CTEC=1800,EQUIP=0.55,PFIRMA=0.5;
+
+function interp(pts,x){
+  if(x<=0) return 0;
+  var last=pts[pts.length-1];
+  if(x>=last[0]) return last[1];
+  for(var i=0;i<pts.length-1;i++){
+    var a=pts[i],b=pts[i+1];
+    if(x>=a[0]&&x<=b[0]) return a[1]+(x-a[0])*(b[1]-a[1])/(b[0]-a[0]);
+  }
+  return 0;
+}
+/* contribución por venta (incluye batería promedio) */
+function contrib(p){
+  var base=p.precio*(p.marg/100)-p.precio*(p.com/100);
+  var bat=(p.bat/100)*(3000*0.20-3000*0.03);
+  return base+bat;
+}
+/* modelo de un mes estable */
+function calc(p,capOverride){
+  var ca=p.cap!==undefined?p.cap:(100+50*p.tec);
+  var lM=interp(HM,p.invM)*(p.filt?0.8:1);
+  var lG=interp(HG,p.invG);
+  var vpM=lM*p.cM/100*p.aM/100*p.vM/100;
+  var vpG=lG*p.cG/100*p.aG/100*p.vG/100;
+  var vhG=Math.min(vpG,ca), vhM=Math.min(vpM,ca-vhG);
+  var sM=vhM*p.kM/100, sG=vhG*p.kG/100;
+  var C=contrib(p);
+  function pack(inv,l,co,ag,vp,vh,s,k){
+    var cacA=s>0?inv/s:0, cacV=s>0?p.cv*vh/s:0, cacR=cacA+cacV;
+    return {inv:inv,leads:l,cont:co,agen:ag,vp:vp,vh:vh,ventas:s,cpl:l>0?inv/l:0,cacA:cacA,cacV:cacV,cacR:cacR,ltv:cacR>0?C/cacR:0,val:k/100*C-p.cv};
+  }
+  var M=pack(p.invM,lM,lM*p.cM/100,lM*p.cM/100*p.aM/100,vpM,vhM,sM,p.kM);
+  var G=pack(p.invG,lG,lG*p.cG/100,lG*p.cG/100*p.aG/100,vpG,vhG,sG,p.kG);
+  var vT=vhM+vhG, sT=sM+sG, inv=p.invM+p.invG;
+  var T={inv:inv,leads:lM+lG,vp:vpM+vpG,vh:vT,ventas:sT,cacR:sT>0?(inv+p.cv*vT)/sT:0};
+  T.ltv=T.cacR>0?C/T.cacR:0;
+  T.res=sT*C-inv-p.cv*vT-FIX-CTEC*p.tec;
+  return {M:M,G:G,T:T,cap:ca,C:C,pedidas:vpM+vpG};
+}
+/* simulador de 24 meses */
+function simular(p,plan){
+  var cash=CAJA0,prev=V0,rows=[],minC=1e18,minM=0,inst=0,viol=false,ruleDrop=false;
+  for(var t=1;t<=24;t++){
+    var extPag=0,extCap=0;
+    plan.hire.forEach(function(h){ if(h<=t) extPag++; if(h<t) extCap++; });
+    var f=plan.filt>0&&t>=plan.filt;
+    var q=Object.assign({},p,{invM:plan.m[t-1],invG:plan.g[t-1],filt:f,cap:100+50*extCap});
+    if(f){q.cM=FIL.c;q.aM=FIL.a;q.vM=FIL.v;q.kM=FIL.k;}
+    var r=calc(q), s=r.T.ventas, C=p.precio;
+    var ent=p.precio*PFIRMA*(s+prev);
+    var inst_pct=1-p.marg/100-EQUIP;
+    var bat=p.bat/100;
+    var ent2=ent+bat*3000*0.5*(s+prev);
+    var sal=p.precio*(EQUIP+p.com/100)*s+p.precio*inst_pct*prev+p.cv*r.T.vh+q.invM+q.invG+FIX+CTEC*extPag
+            +bat*s*(3000*0.8+3000*0.03)+0;
+    cash=cash+ent2-sal;
+    if(cash<minC){minC=cash;minM=t;}
+    if(cash<PISO-1e-9) viol=true;
+    if(t>=19 && (plan.m[t-1]+plan.g[t-1])<(plan.m[t-2]+plan.g[t-2])-1e-9) ruleDrop=true;
+    inst+=s;
+    rows.push({t:t,cash:cash,pedidas:r.pedidas,cap:r.cap,ventas:s});
+    prev=s;
+  }
+  return {rows:rows,final:cash,min:minC,minMes:minM,inst:inst,violPiso:viol,violInv:ruleDrop};
+}
+function rep(v,n){return Array(n).fill(v);}
+var PLANS={
+  actual:{m:rep(4000,24),g:rep(4000,24),hire:[],filt:0,nombre:"Actual"},
+  agencia:{m:rep(8000,24),g:rep(0,24),hire:[],filt:0,nombre:"Agencia"},
+  filtro:{m:rep(4000,24),g:rep(4000,24),hire:[],filt:1,nombre:"Propio 1: filtro"},
+  tecnico:{m:rep(4000,24),g:rep(4000,24),hire:[1],filt:1,nombre:"Propio 2: filtro + técnico"},
+  ganador:{m:[2000,4500].concat(rep(7500,22)),g:rep(5000,24),hire:[1,2],filt:1,nombre:"Propio 3: ganador"}
+};
+</script>
+<script>
+/* ============ INTERFAZ ============ */
+var P=Object.assign({},DEF);
+var charts={};
+var $=function(id){return document.getElementById(id);};
+var nf=new Intl.NumberFormat("de-DE",{maximumFractionDigits:0});
+var nf1=new Intl.NumberFormat("de-DE",{minimumFractionDigits:1,maximumFractionDigits:1});
+var nf2=new Intl.NumberFormat("de-DE",{minimumFractionDigits:2,maximumFractionDigits:2});
+function usd(v){return (v<0?"−$":"$")+nf.format(Math.abs(v));}
+function usd2(v){return "$"+nf2.format(v);}
+function css(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+
+var ids=["invM","invG","cM","aM","vM","kM","cG","aG","vG","kG","cv","tec","precio","marg","com","bat"];
+var fmtMap={invM:usd,invG:usd,cM:pc,aM:pc,vM:pc,kM:pc,cG:pc,aG:pc,vG:pc,kG:pc,cv:usd,tec:function(v){return String(v);},precio:usd,marg:pc,com:function(v){return nf1.format(v)+" %";},bat:pc};
+function pc(v){return nf.format(v)+" %";}
+function syncControls(){
+  ids.forEach(function(k){ $(k).value=P[k]; $(k+"_v").textContent=fmtMap[k](P[k]); });
+  $("filt").checked=P.filt;
+}
+ids.forEach(function(k){
+  $(k).addEventListener("input",function(){ P[k]=parseFloat($(k).value); $(k+"_v").textContent=fmtMap[k](P[k]); render(); });
+});
+$("filt").addEventListener("change",function(){
+  P.filt=$("filt").checked;
+  var s=P.filt?FIL:BASE_M;
+  P.cM=s.c;P.aM=s.a;P.vM=s.v;P.kM=s.k;
+  syncControls(); render();
+});
+function resetAll(){ P=Object.assign({},DEF); syncControls(); render(); }
+
+function semaforo(v){
+  var cls=v>=3?"g":(v>=1?"y":"r"), txt=v>=3?"Sano":(v>=1?"Justo":"Pierde");
+  return '<span class="pill '+cls+'">'+nf2.format(v)+"x · "+txt+"</span>";
+}
+function renderTable(r){
+  var rows=[
+    ["Inversión",usd(r.M.inv),usd(r.G.inv),usd(r.T.inv)],
+    ["Leads",nf1.format(r.M.leads),nf1.format(r.G.leads),nf1.format(r.T.leads)],
+    ["Visitas pedidas",nf1.format(r.M.vp),nf1.format(r.G.vp),nf1.format(r.T.vp)],
+    ["Visitas hechas",nf1.format(r.M.vh),nf1.format(r.G.vh),nf1.format(r.T.vh)],
+    ["Ventas (instalaciones)",nf1.format(r.M.ventas),nf1.format(r.G.ventas),nf1.format(r.T.ventas)],
+    ["CPL (costo por lead)",usd2(r.M.cpl),usd2(r.G.cpl),"—"],
+    ["CAC de anuncios",usd(r.M.cacA),usd(r.G.cacA),"—"],
+    ["CAC real (anuncios + visitas)",usd(r.M.cacR),usd(r.G.cacR),usd(r.T.cacR)],
+    ["LTV:CAC",semaforo(r.M.ltv),semaforo(r.G.ltv),semaforo(r.T.ltv)],
+    ["Valor de una visita",usd2(r.M.val),usd2(r.G.val),"—"],
+    ["Visitas usadas / capacidad","","",nf1.format(r.T.vh)+" / "+r.cap],
+    ["Resultado mensual (después de fijos y técnicos)","","",usd(r.T.res)]
+  ];
+  var h='<thead><tr><th></th><th class="meta-c">Meta</th><th class="goog-c">Google</th><th>Total</th></tr></thead><tbody>';
+  rows.forEach(function(x,i){ h+='<tr'+(i===7||i===11?' class="tot"':'')+'><td>'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td><td>'+x[3]+'</td></tr>'; });
+  $("tbl").innerHTML=h+"</tbody>";
+  $("tbl").querySelector("tbody").lastChild.lastChild.style.color=r.T.res<0?css("--bad"):css("--good");
+}
+function renderTrap(r){
+  var cheaper=r.G.cpl>0&&r.M.cpl>0?r.G.cpl/r.M.cpl:0;
+  var pct=(r.G.cacR>0&&r.M.cacR>0)?(r.M.cacR/r.G.cacR-1)*100:0;
+  var t;
+  if(cheaper>0&&r.M.cacR>0&&r.G.cacR>0){
+    t="El lead de Meta es "+nf1.format(cheaper)+" veces más barato, pero el cliente cuesta "+nf.format(Math.abs(pct))+" % "+(pct>=0?"más":"menos");
+  } else t="Ponga inversión en los dos canales para comparar el lead con el cliente.";
+  $("trap").textContent=t;
+  var ok=r.pedidas<=r.cap+1e-9;
+  $("capAlert").innerHTML=ok?
+    '<div class="alert ok">Capacidad OK: '+nf1.format(r.pedidas)+" visitas pedidas de "+r.cap+" posibles.</div>":
+    '<div class="alert bad">Alerta: se piden '+nf1.format(r.pedidas)+" visitas y solo caben "+r.cap+". Se pierden "+nf1.format(r.pedidas-r.cap)+" visitas (primero se hacen las de Google).</div>";
+}
+function mk(id,cfg){
+  if(charts[id]){ charts[id].data=cfg.data; charts[id].options=cfg.options; charts[id].update("none"); return; }
+  charts[id]=new Chart($(id),cfg);
+}
+function baseOpts(extra){
+  var ink=css("--ink"),line=css("--line");
+  var o={responsive:true,maintainAspectRatio:false,animation:false,
+    plugins:{legend:{labels:{color:ink}}},
+    scales:{x:{ticks:{color:ink},grid:{color:line}},y:{beginAtZero:true,ticks:{color:ink},grid:{color:line}}}};
+  if(extra) Object.keys(extra).forEach(function(k){o[k]=extra[k];});
+  return o;
+}
+function renderCharts(r){
+  var cm=css("--meta"),cg=css("--goog"),cs=css("--sun"),cb=css("--bad");
+  mk("c1",{type:"bar",data:{labels:["Leads","Contactados","Agendan","Visitas hechas","Ventas"],
+    datasets:[{label:"Meta",data:[r.M.leads,r.M.cont,r.M.agen,r.M.vh,r.M.ventas],backgroundColor:cm},
+              {label:"Google",data:[r.G.leads,r.G.cont,r.G.agen,r.G.vh,r.G.ventas],backgroundColor:cg}]},options:baseOpts()});
+  mk("c2",{type:"bar",data:{labels:["Meta","Google"],
+    datasets:[{label:"CPL (costo por lead)",data:[r.M.cpl,r.G.cpl],backgroundColor:cs},
+              {label:"CAC de anuncios",data:[r.M.cacA,r.G.cacA],backgroundColor:css("--muted")},
+              {label:"CAC real",data:[r.M.cacR,r.G.cacR],backgroundColor:cb}]},options:baseOpts()});
+  mk("c3",{type:"bar",data:{labels:["Visitas pedidas"],
+    datasets:[{label:"Google",data:[r.G.vp],backgroundColor:cg,stack:"a"},
+              {label:"Meta",data:[r.M.vp],backgroundColor:cm,stack:"a"},
+              {type:"line",label:"Capacidad ("+r.cap+")",data:[r.cap],borderColor:cb,backgroundColor:cb,borderWidth:3,pointRadius:0,borderDash:[6,4]}]},
+    options:baseOpts({scales:{x:{stacked:true,ticks:{color:css("--ink")},grid:{color:css("--line")}},y:{stacked:true,beginAtZero:true,suggestedMax:Math.max(120,r.cap+20),ticks:{color:css("--ink")},grid:{color:css("--line")}}}})});
+  /* trampa: índice con Google = 100 */
+  function idx(a,b){return b>0?a/b*100:0;}
+  mk("c4",{type:"bar",data:{labels:["Costo del lead (CPL)","Costo del cliente (CAC real)"],
+    datasets:[{label:"Meta",data:[idx(r.M.cpl,r.G.cpl),idx(r.M.cacR,r.G.cacR)],backgroundColor:cm},
+              {label:"Google = 100",data:[100,100],backgroundColor:cg}]},
+    options:baseOpts({plugins:{legend:{labels:{color:css("--ink")}},title:{display:true,text:"Índice (Google = 100)",color:css("--ink")}}})});
+}
+function render(){ var r=calc(P); renderTable(r); renderTrap(r); renderCharts(r); }
+
+/* ===== simulador ===== */
+var SIMP=Object.assign({},DEF);
+function simParams(){
+  var q=Object.assign({},P); /* usa precio, margen, comisión, visita, batería y tasas base del tablero */
+  q.cM=BASE_M.c;q.aM=BASE_M.a;q.vM=BASE_M.v;q.kM=BASE_M.k;
+  q.cG=P.cG;q.aG=P.aG;q.vG=P.vG;q.kG=P.kG;
+  return q;
+}
+var cust={sM:4000,sG:4000,sF:0,sH1:0,sH2:0};
+["sM","sG","sF","sH1","sH2"].forEach(function(k){
+  $(k).value=cust[k]; $(k+"_v").textContent=(k==="sM"||k==="sG")?usd(cust[k]):String(cust[k]);
+  $(k).addEventListener("input",function(){ cust[k]=parseFloat($(k).value); $(k+"_v").textContent=(k==="sM"||k==="sG")?usd(cust[k]):String(cust[k]); renderSim(); });
+});
+$("preset").addEventListener("change",function(){ $("customBox").hidden=$("preset").value!=="custom"; renderSim(); });
+function currentPlan(){
+  var v=$("preset").value;
+  if(v!=="custom") return PLANS[v];
+  var hire=[]; if(cust.sH1>0) hire.push(cust.sH1); if(cust.sH2>0) hire.push(cust.sH2);
+  return {m:rep(cust.sM,24),g:rep(cust.sG,24),hire:hire,filt:cust.sF,nombre:"Personalizado"};
+}
+function kpi(l,v,c){return '<div class="kpi"><span>'+l+'</span><b'+(c?' style="color:'+c+'"':'')+'>'+v+"</b></div>";}
+function renderSim(){
+  var q=simParams(), plan=currentPlan(), r=simular(q,plan);
+  var bad=css("--bad"),good=css("--good");
+  $("kpis").innerHTML=kpi("Caja en el mes 24",usd(r.final),r.final<PISO?bad:good)+kpi("Caja mínima",usd(r.min)+" (mes "+r.minMes+")",r.min<PISO?bad:good)+kpi("Instalaciones, meses 1 a 24",nf.format(r.inst))+kpi("Piso de caja",usd(PISO));
+  var msgs=[];
+  if(r.violPiso) msgs.push("la caja baja del piso de "+usd(PISO));
+  if(r.violInv) msgs.push("la inversión total baja de un mes al siguiente desde el mes 19");
+  $("ruleAlert").innerHTML=msgs.length?'<div class="alert bad">Este plan rompe las reglas: '+msgs.join(" y ")+".</div>":'<div class="alert ok">Este plan respeta las dos reglas del juego.</div>';
+  var labels=r.rows.map(function(x){return x.t;});
+  mk("s1",{type:"line",data:{labels:labels,datasets:[
+    {label:"Caja final",data:r.rows.map(function(x){return x.cash;}),borderColor:css("--good"),backgroundColor:css("--good"),pointRadius:2,tension:0.1},
+    {label:"Piso ($5.000)",data:rep(PISO,24),borderColor:css("--bad"),borderDash:[6,4],pointRadius:0,borderWidth:2}]},options:baseOpts()});
+  mk("s2",{type:"bar",data:{labels:labels,datasets:[
+    {label:"Visitas pedidas",data:r.rows.map(function(x){return x.pedidas;}),backgroundColor:css("--sun")},
+    {type:"line",label:"Capacidad",data:r.rows.map(function(x){return x.cap;}),borderColor:css("--bad"),backgroundColor:css("--bad"),stepped:true,pointRadius:0,borderWidth:3}]},options:baseOpts()});
+  var h='<thead><tr><th>Plan</th><th>Caja mín.</th><th>Mes</th><th>Caja mes 24</th><th>Instalaciones</th><th>Reglas</th></tr></thead><tbody>';
+  Object.keys(PLANS).forEach(function(k){
+    var x=simular(q,PLANS[k]), ok=!x.violPiso&&!x.violInv;
+    h+="<tr><td>"+PLANS[k].nombre+"</td><td>"+usd(x.min)+"</td><td>"+x.minMes+"</td><td>"+usd(x.final)+"</td><td>"+nf.format(x.inst)+'</td><td><span class="pill '+(ok?"g":"r")+'">'+(ok?"Sí":"No")+"</span></td></tr>";
+  });
+  $("cmp").innerHTML=h+"</tbody>";
+}
+function showTab(n){
+  $("p1").hidden=n!==1; $("p2").hidden=n!==2;
+  $("tab1").setAttribute("aria-selected",n===1); $("tab2").setAttribute("aria-selected",n===2);
+  if(n===2) renderSim(); else render();
+}
+if(window.matchMedia) window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",function(){ charts={}; document.querySelectorAll("canvas").forEach(function(c){var ch=Chart.getChart(c); if(ch) ch.destroy();}); if(!$("p1").hidden) render(); else renderSim(); });
+syncControls(); render();
+</script>
+</body>
+</html>

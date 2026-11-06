@@ -1,0 +1,9 @@
+.box {
+  position: relative;
+  width: 100%;
+}
+.caption {
+  font-size: 0.86rem;
+  color: var(--muted);
+  margin: -4px 0 var(--space-3);
+}

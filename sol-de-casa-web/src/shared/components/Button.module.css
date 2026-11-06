@@ -1,0 +1,66 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.16s var(--ease-out),
+    background-color 0.16s,
+    border-color 0.16s;
+}
+.button:hover {
+  transform: translateY(-1px);
+}
+.button:active {
+  transform: translateY(1px);
+}
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+.button[data-size='lg'] {
+  min-height: 56px;
+  padding: 0 28px;
+  font-size: 1.02rem;
+}
+.button[data-block='true'] {
+  width: 100%;
+}
+.button[data-variant='sun'] {
+  background: var(--sun);
+  color: #121722;
+}
+.button[data-variant='sun']:hover {
+  background: var(--sun-strong);
+}
+.button[data-variant='dark'] {
+  background: var(--ink);
+  color: var(--bg);
+}
+.button[data-variant='green'] {
+  background: var(--green);
+  color: #fff;
+}
+.button[data-variant='ghost'] {
+  background: transparent;
+  border-color: currentColor;
+  color: var(--ink);
+}
+.button[data-variant='light'] {
+  background: transparent;
+  border-color: rgb(255 255 255 / 0.4);
+  color: var(--on-night);
+}
+.button[data-variant='light']:hover {
+  border-color: var(--on-night);
+}

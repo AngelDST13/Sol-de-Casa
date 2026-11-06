@@ -1,0 +1,15 @@
+.tag {
+  display: inline-block;
+  vertical-align: middle;
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 99px;
+  border: 1px dashed currentColor;
+  color: var(--warn);
+  line-height: 1.4;
+  white-space: nowrap;
+}

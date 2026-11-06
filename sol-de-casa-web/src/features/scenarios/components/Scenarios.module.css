@@ -1,0 +1,110 @@
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.grid:last-child {
+  margin: var(--space-4) 0 0;
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.split {
+  display: flex;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin: var(--space-3) 0;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+.split > span {
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  min-width: 0;
+  white-space: nowrap;
+}
+.equipment {
+  background: #151515;
+  color: #fff;
+}
+.install {
+  background: #c9c5ba;
+  color: #151515;
+}
+.margin {
+  background: var(--green);
+  color: #fff;
+}
+.lines {
+  display: grid;
+  gap: 6px;
+  font-size: 0.92rem;
+}
+.lines div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  border-bottom: 1px dashed var(--line);
+  padding-bottom: 6px;
+}
+.lines div:last-child {
+  border: 0;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.big {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  line-height: 1;
+}
+.note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: var(--space-3);
+}
+.compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: var(--space-3) 0;
+}
+.compare > div {
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.compare span {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 700;
+}
+.compare strong {
+  font-size: 1.4rem;
+}
+.dropRow {
+  display: grid;
+  grid-template-columns: 110px 1fr 1fr;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: 0.86rem;
+  padding: 6px 0;
+}
+.bar {
+  height: 18px;
+  border-radius: 4px;
+  min-width: 2px;
+}
+.barWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

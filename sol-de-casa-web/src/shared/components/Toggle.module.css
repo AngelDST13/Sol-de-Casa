@@ -1,0 +1,54 @@
+.row {
+  position: relative;
+  padding: var(--space-2) 0;
+}
+.input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.label {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.description {
+  display: block;
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin-top: 2px;
+}
+.track {
+  flex: none;
+  width: 44px;
+  height: 26px;
+  border-radius: 99px;
+  background: var(--line);
+  position: relative;
+  transition: background 0.2s;
+}
+.track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+  transition: transform 0.2s;
+}
+.input:checked + .label .track {
+  background: var(--green);
+}
+.input:checked + .label .track::after {
+  transform: translateX(18px);
+}
+.input:focus-visible + .label .track {
+  outline: 3px solid var(--sun);
+  outline-offset: 2px;
+}

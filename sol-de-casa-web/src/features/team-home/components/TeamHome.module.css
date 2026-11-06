@@ -1,0 +1,228 @@
+.page {
+  display: grid;
+  gap: var(--space-5);
+}
+.head p {
+  color: var(--muted);
+  font-weight: 700;
+}
+.head h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.2rem, 7vw, 3.2rem);
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sun);
+}
+.callNow {
+  color: var(--on-night);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+}
+.callNow h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: 6px;
+}
+.callHint {
+  color: var(--on-night-muted);
+  font-size: 0.86rem;
+  margin-top: var(--space-2);
+  max-width: 48ch;
+}
+.callList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.callList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid var(--cell-line);
+}
+.callList div {
+  display: grid;
+  min-width: 0;
+}
+.callList span {
+  font-size: 0.8rem;
+  color: var(--on-night-muted);
+}
+.callList span span {
+  color: inherit;
+}
+.callButton {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: var(--sun);
+  color: #121722;
+  font-weight: 800;
+  text-decoration: none;
+}
+.late {
+  display: inline-block;
+  margin-left: 8px;
+  font-style: normal;
+  font-weight: 800;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #121722;
+  background: #ff8a80;
+  padding: 1px 7px;
+  border-radius: 999px;
+}
+.allLink {
+  font-weight: 800;
+  color: var(--sun);
+  text-decoration: none;
+}
+.card .allLink {
+  color: var(--green);
+  display: inline-block;
+  margin-top: var(--space-3);
+}
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+@media (min-width: 900px) {
+  .kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .callNow {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: start;
+  }
+  .allLink {
+    grid-column: 1;
+  }
+}
+.grid {
+  display: grid;
+  gap: var(--space-4);
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  min-width: 0;
+}
+.card h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: var(--space-4);
+}
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.cardHead a {
+  font-weight: 800;
+  color: var(--green);
+}
+.sources,
+.costs,
+.recent {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+.sources li {
+  display: grid;
+  grid-template-columns: 100px 1fr 28px;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: 0.88rem;
+}
+.sources strong {
+  text-align: right;
+}
+.sourceBar {
+  height: 12px;
+  background: var(--surface-2);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.sourceBar span {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: var(--cell);
+}
+.sourceBar span[data-source='referido'] {
+  background: var(--sun);
+}
+.costs li {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+.costs li[data-best='true'] {
+  background: var(--sun-soft);
+}
+.costs strong {
+  font-size: 1.15rem;
+}
+.small {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-top: var(--space-3);
+}
+.recent li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px var(--space-3);
+  align-items: center;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+.recent li > span:first-child {
+  display: grid;
+  grid-column: 1 / -1;
+}
+.recent small {
+  color: var(--muted);
+}
+@media (min-width: 640px) {
+  .recent li {
+    grid-template-columns: minmax(0, 1fr) 100px auto;
+  }
+  .recent li > span:first-child {
+    grid-column: auto;
+  }
+}

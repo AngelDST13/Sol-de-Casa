@@ -1,0 +1,16 @@
+.empty {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: var(--space-6) var(--space-4);
+  color: var(--muted);
+}
+.empty strong {
+  color: var(--ink);
+  font-size: 1.05rem;
+}
+.art {
+  width: 88px;
+  margin-bottom: var(--space-2);
+}

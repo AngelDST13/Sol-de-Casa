@@ -1,0 +1,108 @@
+.decision {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--sun);
+  margin-bottom: var(--space-2);
+}
+.decisionText {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.3rem, 4.5vw, 2rem);
+  line-height: 1.2;
+}
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.block {
+  margin-bottom: var(--space-4);
+}
+.body {
+  font-size: 0.95rem;
+}
+.list {
+  margin: 0;
+  padding-left: 1.2em;
+  display: grid;
+  gap: var(--space-2);
+  font-size: 0.93rem;
+}
+.pitch {
+  background: var(--sun);
+  color: #151515;
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+}
+.pitch .eyebrow {
+  color: #151515;
+}
+.pitchTitle {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  margin-bottom: var(--space-3);
+}
+.pitchText {
+  font-size: 1rem;
+  margin-top: var(--space-3);
+  max-width: 75ch;
+}
+.errors {
+  display: grid;
+  gap: var(--space-3);
+}
+@media (min-width: 900px) {
+  .errors {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.error {
+  border-left: 4px solid var(--sun);
+  background: var(--surface-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  display: grid;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+.assumptions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.assumptions li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px var(--space-3);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.92rem;
+}
+.source {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--green);
+  white-space: nowrap;
+}
+.source[data-own='true'] {
+  color: var(--warn);
+}

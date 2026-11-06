@@ -1,0 +1,45 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--ink);
+}
+.badge::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge[data-status='nuevo'] {
+  background: var(--sun-soft);
+  color: var(--warn);
+}
+.badge[data-status='contactado'],
+.badge[data-status='agendado'],
+.badge[data-status='visitado'] {
+  background: color-mix(in srgb, var(--sky) 14%, transparent);
+  color: var(--sky);
+}
+.badge[data-status='firmado'] {
+  background: color-mix(in srgb, var(--good) 14%, transparent);
+  color: var(--good);
+}
+.badge[data-status='perdido'] {
+  color: var(--muted);
+}
+.source {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.source[data-source='referido'] {
+  color: var(--green);
+}

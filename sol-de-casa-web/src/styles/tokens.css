@@ -1,0 +1,95 @@
+/*
+ * Tokens de Sol de Casa. Paleta sacada de los techos con paneles: azul noche de la celda,
+ * amarillo del sol al mediodía y el crema cálido de una pared al sol.
+ */
+:root {
+  color-scheme: light;
+  --bg: #f6f2e9;
+  --surface: #fffdf8;
+  --surface-2: #f2ede2;
+  --ink: #121722;
+  --muted: #5b6170;
+  --line: #e3dccc;
+  --sun: #f4b000;
+  --sun-strong: #e39400;
+  --sun-soft: #fcefc7;
+  --green: #1d7f55;
+  --meta: #c8366e;
+  --google: #1d7f55;
+  --good: #1d7f55;
+  --warn: #b77800;
+  --bad: #c3352b;
+  --on-accent: #121722;
+
+  /* Siempre oscuros: secciones de marca, sin importar el tema. */
+  --night: #0d1524;
+  --night-2: #16223a;
+  --cell: #1f3253;
+  --cell-line: rgb(173 196 235 / 0.16);
+  --sky: #2667d4;
+  --on-night: #eef2f8;
+  --on-night-muted: #a7b1c4;
+
+  --font-body: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Archivo', system-ui, sans-serif;
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --shadow: 0 1px 2px rgb(18 23 34 / 0.05), 0 8px 24px rgb(18 23 34 / 0.05);
+  --shadow-lift: 0 18px 40px rgb(13 21 36 / 0.18);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --bottom-nav-height: 64px;
+  --container: 1200px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0b1220;
+    --surface: #121b2c;
+    --surface-2: #18233a;
+    --ink: #eef1f6;
+    --muted: #9aa4b5;
+    --line: #26324a;
+    --sun: #ffc233;
+    --sun-strong: #ffb000;
+    --sun-soft: #3a2f12;
+    --green: #4cc68b;
+    --meta: #ff6f9f;
+    --google: #4cc68b;
+    --good: #4cc68b;
+    --warn: #f0b43c;
+    --bad: #ff6b60;
+    --shadow: none;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0b1220;
+  --surface: #121b2c;
+  --surface-2: #18233a;
+  --ink: #eef1f6;
+  --muted: #9aa4b5;
+  --line: #26324a;
+  --sun: #ffc233;
+  --sun-strong: #ffb000;
+  --sun-soft: #3a2f12;
+  --green: #4cc68b;
+  --meta: #ff6f9f;
+  --google: #4cc68b;
+  --good: #4cc68b;
+  --warn: #f0b43c;
+  --bad: #ff6b60;
+  --shadow: none;
+}

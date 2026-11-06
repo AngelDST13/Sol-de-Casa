@@ -1,0 +1,39 @@
+.shell {
+  min-height: 100dvh;
+  background: var(--bg);
+}
+.header {
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.inner {
+  max-width: 680px;
+  margin: 0 auto;
+  height: 64px;
+  padding: 0 var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.inner a {
+  text-decoration: none;
+}
+.trust {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+.trust strong {
+  color: var(--ink);
+}
+.main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-4) var(--space-6);
+}
+.footer {
+  text-align: center;
+  font-size: 0.76rem;
+  color: var(--muted);
+  padding: 0 var(--space-4) var(--space-6);
+}
