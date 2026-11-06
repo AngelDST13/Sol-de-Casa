@@ -3,7 +3,7 @@ import styles from './Neighbor.module.css';
 
 /** Solo dos datos: lo demás (recibo, quién lo refirió) ya lo tenemos. */
 export const ScheduleForm = ({ flow }) => {
-  const { form, updateField, errors, submit } = flow;
+  const { form, updateField, errors, submit, setStep } = flow;
   return (
     <Card title="¿A quién llamamos para agendar?" eyebrow="Visita técnica gratis">
       <form className={styles.form} onSubmit={submit} noValidate>
@@ -44,6 +44,9 @@ export const ScheduleForm = ({ flow }) => {
           Agendar mi visita
         </button>
         <p className={styles.small}>Lo llamamos en menos de 5 minutos, de lunes a viernes en horario de oficina.</p>
+        <button type="button" className={styles.back} onClick={() => setStep('calculate')}>
+          ← Cambiar mi recibo
+        </button>
       </form>
     </Card>
   );

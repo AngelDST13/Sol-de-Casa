@@ -1,0 +1,211 @@
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+.kpis > :last-child {
+  grid-column: 1 / -1;
+}
+@media (min-width: 760px) {
+  .kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .kpis > :last-child {
+    grid-column: auto;
+  }
+}
+.weekBar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.weekNav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.weekNav button {
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  font-weight: 800;
+  cursor: pointer;
+}
+.weekNav strong {
+  font-size: 0.95rem;
+  padding: 0 6px;
+}
+.weekNav .today {
+  padding: 0 14px;
+}
+.week {
+  display: grid;
+  gap: var(--space-3);
+}
+@media (min-width: 700px) {
+  .week {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1100px) {
+  .week {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1500px) {
+  .week {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+}
+.day {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+  display: grid;
+  gap: var(--space-2);
+  align-content: start;
+  min-height: 90px;
+}
+.day[data-today='true'] {
+  border-color: var(--sun);
+  box-shadow: inset 0 3px 0 var(--sun);
+}
+.day h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-transform: capitalize;
+}
+.day h2 span {
+  font-size: 0.72rem;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+.free {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.visit {
+  border-radius: 12px;
+  background: var(--surface-2);
+  padding: var(--space-3);
+  display: grid;
+  gap: 4px;
+  font-size: 0.82rem;
+  border-left: 3px solid var(--sky);
+}
+.visit[data-status='firmado'] {
+  border-left-color: var(--good);
+}
+.visit p {
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.visitHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+.visitHead time {
+  font-weight: 800;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+.visitStatus {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--sky);
+  text-align: right;
+}
+.visit[data-status='firmado'] .visitStatus {
+  color: var(--good);
+}
+.visit[data-status='visitado'] .visitStatus {
+  color: var(--warn);
+}
+.visitName {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-weight: 800;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--ink);
+}
+.visitName:hover {
+  text-decoration: underline;
+}
+.tech {
+  font-weight: 700;
+}
+.visitActions {
+  display: grid;
+  gap: 6px;
+  margin-top: 4px;
+}
+.visitActions button {
+  flex: 1 1 auto;
+  min-height: 36px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--ink);
+  color: var(--bg);
+  font-weight: 800;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.visitActions button[data-tone='muted'] {
+  background: transparent;
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+}
+.visitActions button[data-tone='good'] {
+  background: var(--good);
+  color: #fff;
+}
+.pending {
+  margin-top: var(--space-5);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+.pending h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin-bottom: var(--space-3);
+}
+.pending ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.pending li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--line);
+}
+.pending li > span {
+  display: grid;
+}
+.pending small {
+  color: var(--muted);
+}

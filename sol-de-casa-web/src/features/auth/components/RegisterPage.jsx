@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '../../../shared/components/Button.jsx';
 import { Field } from '../../../shared/components/Field.jsx';
 import { useAuth } from '../../../shared/hooks/AuthContext.jsx';
-import { TEAM_INVITE_CODE } from '../../../services/authService.js';
+import { useSettings } from '../../../shared/hooks/useStores.js';
 import styles from './Auth.module.css';
 
 const INITIAL = {
@@ -33,6 +33,7 @@ const validate = (role, form) => {
 
 export const RegisterPage = () => {
   const { register } = useAuth();
+  const settings = useSettings();
   const navigate = useNavigate();
   const [role, setRole] = useState('client');
   const [form, setForm] = useState(INITIAL);
@@ -140,7 +141,7 @@ export const RegisterPage = () => {
             value={form.teamCode}
             onChange={set('teamCode')}
             error={errors.teamCode}
-            hint={`Para la demostración: ${TEAM_INVITE_CODE}`}
+            hint={`Para la demostración: ${settings.teamInviteCode}`}
           />
         )}
 

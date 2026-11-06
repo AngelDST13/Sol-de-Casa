@@ -6,8 +6,9 @@ import { SiteLayout } from './layouts/SiteLayout.jsx';
 import { AuthLayout } from './layouts/AuthLayout.jsx';
 import { ReferralLayout } from './layouts/ReferralLayout.jsx';
 import { AppShell } from './layouts/AppShell.jsx';
+import { PanelShell, RequireArea } from './PanelShell.jsx';
 import { RequireRole } from './RequireRole.jsx';
-import { PANEL_GROUPS, PANEL_PRIMARY, PORTAL_GROUPS, PORTAL_PRIMARY } from './navigation.js';
+import { PORTAL_GROUPS, PORTAL_PRIMARY } from './navigation.js';
 import { LandingPage } from '../features/landing/index.js';
 import { LoginPage, RegisterPage } from '../features/auth/index.js';
 import { NeighborPage } from '../features/neighbor/index.js';
@@ -20,6 +21,11 @@ import { DashboardPage } from '../features/dashboard/index.js';
 import { ScenariosPage } from '../features/scenarios/index.js';
 import { SimulatorPage } from '../features/simulator/index.js';
 import { ReportPage } from '../features/report/index.js';
+import { AgendaPage } from '../features/agenda/index.js';
+import { ClientsPage } from '../features/clients/index.js';
+import { ReportsPage } from '../features/reports/index.js';
+import { UsersPage } from '../features/users/index.js';
+import { SettingsPage } from '../features/settings/index.js';
 import { NotFoundPage } from './NotFoundPage.jsx';
 
 /** Lleva al inicio de la página al cambiar de ruta, salvo que el link apunte a una sección (#ahorro). */
@@ -89,19 +95,28 @@ export const App = () => (
           element={
             <RequireRole role="team">
               <CaseParamsProvider>
-                <AppShell title="Panel del equipo" groups={PANEL_GROUPS} primary={PANEL_PRIMARY} />
+                <PanelShell />
               </CaseParamsProvider>
             </RequireRole>
           }
         >
           <Route index element={<PanelHomePage />} />
-          <Route path="solicitudes" element={<LeadsPage />} />
-          <Route path="referidos" element={<OwnerPanelPage />} />
-          <Route path="ficha" element={<GrowthSheetPage />} />
-          <Route path="anuncios" element={<DashboardPage />} />
-          <Route path="escenarios" element={<ScenariosPage />} />
-          <Route path="caja" element={<SimulatorPage />} />
-          <Route path="recomendacion" element={<ReportPage />} />
+          {[
+            ['solicitudes', 'solicitudes', <LeadsPage key="s" />],
+            ['agenda', 'agenda', <AgendaPage key="a" />],
+            ['clientes', 'clientes', <ClientsPage key="c" />],
+            ['reportes', 'reportes', <ReportsPage key="r" />],
+            ['referidos', 'referidos', <OwnerPanelPage key="o" />],
+            ['ficha', 'ficha', <GrowthSheetPage key="f" />],
+            ['anuncios', 'anuncios', <DashboardPage key="d" />],
+            ['escenarios', 'anuncios', <ScenariosPage key="e" />],
+            ['caja', 'anuncios', <SimulatorPage key="j" />],
+            ['recomendacion', 'anuncios', <ReportPage key="m" />],
+            ['usuarios', 'usuarios', <UsersPage key="u" />],
+            ['ajustes', 'ajustes', <SettingsPage key="g" />],
+          ].map(([path, area, page]) => (
+            <Route key={path} path={path} element={<RequireArea area={area}>{page}</RequireArea>} />
+          ))}
         </Route>
 
         {Object.entries(LEGACY).map(([from, to]) => (

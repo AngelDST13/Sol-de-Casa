@@ -1,4 +1,4 @@
-// Menús de las dos áreas privadas.
+// Menús de las dos áreas privadas. `area` se cruza con los permisos de cada puesto.
 export const PORTAL_GROUPS = [
   {
     title: 'Mi casa',
@@ -16,34 +16,55 @@ export const PORTAL_GROUPS = [
   },
 ];
 
+export const PORTAL_PRIMARY = PORTAL_GROUPS.flatMap((group) => group.items);
+
 export const PANEL_GROUPS = [
   {
     title: 'Operación',
     items: [
-      { to: '/panel', end: true, label: 'Resumen', short: 'Resumen', icon: 'home' },
-      { to: '/panel/solicitudes', label: 'Solicitudes de visita', short: 'Solicitudes', icon: 'inbox' },
+      { to: '/panel', end: true, area: 'resumen', label: 'Resumen', short: 'Resumen', icon: 'home' },
+      { to: '/panel/solicitudes', area: 'solicitudes', label: 'Solicitudes', short: 'Solicitudes', icon: 'inbox' },
+      { to: '/panel/agenda', area: 'agenda', label: 'Agenda de visitas', short: 'Agenda', icon: 'calendar' },
+      { to: '/panel/clientes', area: 'clientes', label: 'Clientes', short: 'Clientes', icon: 'users' },
     ],
   },
   {
-    title: 'Referidos (sesión 2)',
+    title: 'Crecimiento',
     items: [
-      { to: '/panel/referidos', label: 'Panel de referidos', short: 'Referidos', icon: 'users' },
-      { to: '/panel/ficha', label: 'Ficha de growth', icon: 'flag' },
+      { to: '/panel/reportes', area: 'reportes', label: 'Reportes', short: 'Reportes', icon: 'bars' },
+      { to: '/panel/referidos', area: 'referidos', label: 'Referidos', short: 'Referidos', icon: 'share' },
+      { to: '/panel/ficha', area: 'ficha', label: 'Ficha de growth', icon: 'flag' },
     ],
   },
   {
-    title: 'Anuncios (sesión 1)',
+    title: 'Análisis de anuncios',
     items: [
-      { to: '/panel/anuncios', label: 'Tablero de anuncios', short: 'Anuncios', icon: 'gauge' },
-      { to: '/panel/escenarios', label: 'Escenarios', icon: 'columns' },
-      { to: '/panel/caja', label: 'Caja 24 meses', icon: 'chart' },
-      { to: '/panel/recomendacion', label: 'Recomendación', icon: 'doc' },
+      { to: '/panel/anuncios', area: 'anuncios', label: 'Tablero de anuncios', short: 'Anuncios', icon: 'gauge' },
+      { to: '/panel/escenarios', area: 'anuncios', label: 'Escenarios', icon: 'columns' },
+      { to: '/panel/caja', area: 'anuncios', label: 'Caja 24 meses', icon: 'chart' },
+      { to: '/panel/recomendacion', area: 'anuncios', label: 'Recomendación', icon: 'doc' },
+    ],
+  },
+  {
+    title: 'Administración',
+    items: [
+      { to: '/panel/usuarios', area: 'usuarios', label: 'Usuarios', short: 'Usuarios', icon: 'key' },
+      { to: '/panel/ajustes', area: 'ajustes', label: 'Ajustes', short: 'Ajustes', icon: 'gear' },
     ],
   },
 ];
 
-const flat = (groups) => groups.flatMap((group) => group.items);
-export const PORTAL_PRIMARY = flat(PORTAL_GROUPS);
-export const PANEL_PRIMARY = flat(PANEL_GROUPS).filter((item) =>
-  ['/panel', '/panel/solicitudes', '/panel/referidos', '/panel/anuncios'].includes(item.to),
-);
+const PRIMARY_ORDER = ['/panel', '/panel/solicitudes', '/panel/agenda', '/panel/reportes', '/panel/clientes'];
+
+/** Menú del panel según los permisos de quien entró. */
+export const panelMenuFor = (canAccess) => {
+  const groups = PANEL_GROUPS.map((group) => ({
+    ...group,
+    items: group.items.filter((item) => canAccess(item.area)),
+  })).filter((group) => group.items.length);
+  const items = groups.flatMap((group) => group.items);
+  const primary = PRIMARY_ORDER.map((to) => items.find((item) => item.to === to))
+    .filter(Boolean)
+    .slice(0, 4);
+  return { groups, primary };
+};

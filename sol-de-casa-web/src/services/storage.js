@@ -42,16 +42,22 @@ export const removeKey = (key) => {
   }
 };
 
-/** Pequeño almacén observable sobre una llave de localStorage. */
-export const createStore = (key, initial) => {
-  let state = readJson(key, null) ?? initial();
+/**
+ * Almacén observable sobre una llave de localStorage.
+ * `migrate` recibe lo guardado por una versión anterior y lo completa con los campos nuevos.
+ */
+export const createStore = (key, initial, migrate = (state) => state) => {
+  const stored = readJson(key, null);
+  let state = stored ? migrate(stored) : initial();
+  if (stored) writeJson(key, state);
   const listeners = new Set();
+  const emit = () => listeners.forEach((listener) => listener(state));
   return {
     get: () => state,
     set: (next) => {
       state = next;
       writeJson(key, next);
-      listeners.forEach((listener) => listener(next));
+      emit();
     },
     subscribe: (listener) => {
       listeners.add(listener);
@@ -60,7 +66,7 @@ export const createStore = (key, initial) => {
     reset: () => {
       state = initial();
       writeJson(key, state);
-      listeners.forEach((listener) => listener(state));
+      emit();
     },
   };
 };

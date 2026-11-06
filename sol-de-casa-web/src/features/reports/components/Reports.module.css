@@ -1,0 +1,85 @@
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+@media (min-width: 900px) {
+  .kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-3);
+  align-content: start;
+  min-width: 0;
+}
+.card h2 {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.funnel {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.funnel li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px 44px;
+  grid-template-areas: 'label value rate' 'bar bar bar';
+  gap: 4px var(--space-2);
+  align-items: center;
+}
+.label {
+  grid-area: label;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.funnel strong {
+  grid-area: value;
+  text-align: right;
+}
+.funnel small {
+  grid-area: rate;
+  text-align: right;
+  color: var(--muted);
+}
+.bar {
+  grid-area: bar;
+  height: 14px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--cell);
+}
+.funnel li:last-child .bar span {
+  background: var(--sun);
+}
+@media (min-width: 760px) {
+  .funnel li {
+    grid-template-columns: 170px minmax(0, 1fr) 44px 50px;
+    grid-template-areas: 'label bar value rate';
+  }
+}
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

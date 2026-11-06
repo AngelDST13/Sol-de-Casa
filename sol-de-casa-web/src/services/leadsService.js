@@ -1,3 +1,4 @@
+import { logActivity } from './activityService.js';
 import { createStore } from './storage.js';
 
 /**
@@ -16,17 +17,38 @@ export const LEAD_STATUSES = [
   { id: 'perdido', label: 'Perdido', hint: 'No contestó, no le interesó o no califica' },
 ];
 
+export const statusLabel = (id) => LEAD_STATUSES.find((status) => status.id === id)?.label ?? id;
+
 export const LEAD_SOURCES = {
   web: 'Página web',
   referido: 'Referido',
   meta: 'Meta',
   google: 'Google',
   letrero: 'Letrero',
+  telefono: 'Llamada',
 };
 
 const hoursAgo = (hours) => new Date(Date.now() - hours * 3600 * 1000).toISOString();
 
-/** Datos de ejemplo para que el CRM no arranque vacío. Todos llevan simulated: true. */
+/** Fecha y hora de visita a N días de hoy, a la hora indicada. */
+const visitIn = (days, hour) => {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  date.setHours(hour, 0, 0, 0);
+  return date.toISOString();
+};
+
+const withDefaults = (lead) => ({
+  assignedTo: null,
+  technicianId: null,
+  visitAt: null,
+  history: [],
+  simulated: false,
+  ...lead,
+  notes: Array.isArray(lead.notes) ? lead.notes : [],
+});
+
+/** Datos de ejemplo para que el sistema no arranque vacío. Todos llevan simulated: true. */
 const seedLeads = () =>
   [
     {
@@ -39,6 +61,9 @@ const seedLeads = () =>
       refCode: 'FAM-0137',
       status: 'firmado',
       createdAt: hoursAgo(24 * 21),
+      assignedTo: 'u-paola',
+      technicianId: 'u-mario',
+      visitAt: visitIn(-18, 9),
     },
     {
       id: 'sim-02',
@@ -50,6 +75,9 @@ const seedLeads = () =>
       refCode: 'FAM-0137',
       status: 'agendado',
       createdAt: hoursAgo(24 * 6),
+      assignedTo: 'u-paola',
+      technicianId: 'u-mario',
+      visitAt: visitIn(1, 9),
     },
     {
       id: 'sim-03',
@@ -60,6 +88,9 @@ const seedLeads = () =>
       source: 'google',
       status: 'visitado',
       createdAt: hoursAgo(24 * 4),
+      assignedTo: 'u-kevin',
+      technicianId: 'u-diego',
+      visitAt: visitIn(-1, 14),
     },
     {
       id: 'sim-04',
@@ -70,6 +101,9 @@ const seedLeads = () =>
       source: 'google',
       status: 'firmado',
       createdAt: hoursAgo(24 * 9),
+      assignedTo: 'u-kevin',
+      technicianId: 'u-diego',
+      visitAt: visitIn(-6, 10),
     },
     {
       id: 'sim-05',
@@ -80,6 +114,7 @@ const seedLeads = () =>
       source: 'meta',
       status: 'perdido',
       createdAt: hoursAgo(24 * 3),
+      assignedTo: 'u-paola',
     },
     {
       id: 'sim-06',
@@ -90,6 +125,7 @@ const seedLeads = () =>
       source: 'meta',
       status: 'contactado',
       createdAt: hoursAgo(30),
+      assignedTo: 'u-kevin',
     },
     {
       id: 'sim-07',
@@ -110,6 +146,9 @@ const seedLeads = () =>
       source: 'letrero',
       status: 'agendado',
       createdAt: hoursAgo(24 * 2),
+      assignedTo: 'u-paola',
+      technicianId: 'u-diego',
+      visitAt: visitIn(0, 15),
     },
     {
       id: 'sim-09',
@@ -121,9 +160,35 @@ const seedLeads = () =>
       status: 'nuevo',
       createdAt: hoursAgo(5),
     },
-  ].map((lead) => ({ ...lead, simulated: true, notes: '' }));
+    {
+      id: 'sim-10',
+      name: 'Andrea Solís',
+      phone: '8455 6120',
+      neighborhood: 'Coronado',
+      monthlyBill: 125,
+      source: 'google',
+      status: 'agendado',
+      createdAt: hoursAgo(24 * 3),
+      assignedTo: 'u-kevin',
+      technicianId: 'u-mario',
+      visitAt: visitIn(2, 11),
+    },
+    {
+      id: 'sim-11',
+      name: 'Felipe Arias',
+      phone: '8320 7781',
+      neighborhood: 'Desamparados',
+      monthlyBill: 90,
+      source: 'meta',
+      status: 'agendado',
+      createdAt: hoursAgo(24 * 2),
+      assignedTo: 'u-paola',
+      technicianId: 'u-diego',
+      visitAt: visitIn(3, 8),
+    },
+  ].map((lead) => withDefaults({ ...lead, simulated: true }));
 
-const leadsStore = createStore(LEADS_KEY, seedLeads);
+const leadsStore = createStore(LEADS_KEY, seedLeads, (saved) => saved.map(withDefaults));
 const sharesStore = createStore(SHARES_KEY, () => []);
 
 export const getLeads = () => leadsStore.get();
@@ -131,31 +196,110 @@ export const subscribeLeads = leadsStore.subscribe;
 export const getShares = () => sharesStore.get();
 export const subscribeShares = sharesStore.subscribe;
 
-export const addLead = ({ name, phone, monthlyBill, refCode, neighborhood = '', source }) => {
-  const lead = {
+const historyEntry = (actor, text) => ({ at: new Date().toISOString(), by: actor ?? 'Sistema', text });
+
+const patch = (id, change) => {
+  let updated = null;
+  leadsStore.set(
+    leadsStore.get().map((lead) => {
+      if (lead.id !== id) return lead;
+      updated = change(lead);
+      return updated;
+    }),
+  );
+  return updated;
+};
+
+/** El vecino o cualquier persona pide la visita desde la web. */
+export const addLead = ({ name, phone, monthlyBill, refCode, neighborhood = '', source }, actor) => {
+  const origin = source ?? (refCode ? 'referido' : 'web');
+  const lead = withDefaults({
     id: `lead-${Date.now()}`,
     name,
     phone,
     neighborhood,
     monthlyBill,
-    source: source ?? (refCode ? 'referido' : 'web'),
+    source: origin,
     refCode: refCode || null,
     status: 'nuevo',
     createdAt: new Date().toISOString(),
-    simulated: false,
-    notes: '',
-  };
+    history: [
+      historyEntry(
+        actor ?? name,
+        actor ? `Registró la solicitud (${LEAD_SOURCES[origin]})` : 'Pidió la visita desde la web',
+      ),
+    ],
+  });
   leadsStore.set([lead, ...leadsStore.get()]);
+  logActivity({
+    actor: actor ?? name,
+    action: 'Nueva solicitud de visita',
+    detail: `${name} · ${LEAD_SOURCES[origin]}`,
+    leadId: lead.id,
+  });
   return lead;
 };
 
-export const updateLead = (id, changes) =>
-  leadsStore.set(leadsStore.get().map((lead) => (lead.id === id ? { ...lead, ...changes } : lead)));
+export const setLeadStatus = (id, status, actor) => {
+  const lead = patch(id, (current) =>
+    current.status === status
+      ? current
+      : {
+          ...current,
+          status,
+          history: [...current.history, historyEntry(actor, `Cambió el estado a «${statusLabel(status)}»`)],
+        },
+  );
+  if (lead) logActivity({ actor, action: `Marcó «${statusLabel(status)}»`, detail: lead.name, leadId: id });
+};
+
+export const assignLead = (id, userId, userName, actor) => {
+  const lead = patch(id, (current) => ({
+    ...current,
+    assignedTo: userId || null,
+    history: [...current.history, historyEntry(actor, userId ? `Asignó a ${userName}` : 'Quitó la asignación')],
+  }));
+  if (lead)
+    logActivity({ actor, action: 'Asignó una solicitud', detail: `${lead.name} → ${userName ?? 'nadie'}`, leadId: id });
+};
+
+/** Agenda la visita técnica: guarda fecha y técnico y pasa el estado a «Visita agendada». */
+export const scheduleVisit = (id, { visitAt, technicianId, technicianName }, actor) => {
+  const when = new Date(visitAt).toLocaleString('es-CR', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+  const lead = patch(id, (current) => ({
+    ...current,
+    visitAt,
+    technicianId,
+    status: ['nuevo', 'contactado', 'perdido'].includes(current.status) ? 'agendado' : current.status,
+    history: [...current.history, historyEntry(actor, `Agendó la visita: ${when} con ${technicianName}`)],
+  }));
+  if (lead) logActivity({ actor, action: 'Agendó una visita', detail: `${lead.name} · ${when}`, leadId: id });
+};
+
+export const addNote = (id, text, actor) =>
+  patch(id, (current) => ({ ...current, notes: [...current.notes, historyEntry(actor, text.trim())] }));
+
+export const updateLead = (id, changes, actor) => {
+  if (changes.status) return setLeadStatus(id, changes.status, actor);
+  return patch(id, (current) => ({ ...current, ...changes }));
+};
+
+export const deleteLead = (id, actor) => {
+  const lead = leadsStore.get().find((item) => item.id === id);
+  leadsStore.set(leadsStore.get().filter((item) => item.id !== id));
+  if (lead) logActivity({ actor, action: 'Eliminó una solicitud', detail: lead.name });
+};
 
 export const addShare = ({ refCode, channel }) =>
   sharesStore.set([...sharesStore.get(), { refCode, channel, at: new Date().toISOString() }]);
 
-export const resetDemoData = () => {
+export const resetLeads = () => {
   leadsStore.reset();
   sharesStore.reset();
 };

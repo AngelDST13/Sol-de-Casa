@@ -226,3 +226,27 @@
     grid-column: auto;
   }
 }
+.activity {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+.activity li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 0.88rem;
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+.activity em {
+  font-style: normal;
+  color: var(--muted);
+}
+.activity small {
+  flex: none;
+  color: var(--muted);
+  font-size: 0.76rem;
+}

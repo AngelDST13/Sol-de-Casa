@@ -1,3 +1,4 @@
+import { Button } from '../../../shared/components/Button.jsx';
 import { Card } from '../../../shared/components/index.js';
 import { formatUsd } from '../../../shared/utils/format.js';
 import styles from './Neighbor.module.css';
@@ -32,6 +33,14 @@ export const Confirmation = ({ saved, referrer, result }) => (
         </li>
       )}
     </ul>
-    <p className={styles.small}>Lleve a mano un recibo de luz reciente: el técnico lo usa para armar su propuesta.</p>
+    <p className={styles.small}>Tenga a mano un recibo de luz reciente: el técnico lo usa para armar su propuesta.</p>
+    <div className={styles.doneActions}>
+      <Button to="/" variant="dark" size="lg">
+        Volver al inicio
+      </Button>
+      <Button to="/#preguntas" variant="ghost" size="lg">
+        Ver preguntas frecuentes
+      </Button>
+    </div>
   </Card>
 );

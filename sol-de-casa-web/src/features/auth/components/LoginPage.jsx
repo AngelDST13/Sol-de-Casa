@@ -8,7 +8,9 @@ import styles from './Auth.module.css';
 
 const DEMO_ACCOUNTS = [
   { email: 'familia@soldecasa.cr', label: 'Familia con paneles', detail: 'Ve su ahorro y comparte' },
-  { email: 'andres@soldecasa.cr', label: 'Andrés (equipo)', detail: 'Panel, solicitudes y análisis' },
+  { email: 'andres@soldecasa.cr', label: 'Andrés (administrador)', detail: 'Todo el panel, usuarios y ajustes' },
+  { email: 'paola@soldecasa.cr', label: 'Paola (asesora)', detail: 'Solicitudes, agenda y reportes' },
+  { email: 'mario@soldecasa.cr', label: 'Mario (técnico)', detail: 'Su agenda de visitas' },
 ];
 
 export const LoginPage = () => {
